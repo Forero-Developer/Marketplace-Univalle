@@ -1,13 +1,8 @@
-import { SVGAttributes } from 'react';
-
-export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
-    return (
-      <svg
+<svg
       xmlns="http://www.w3.org/2000/svg"
-      width={110}
-      height={110}
+      width="110"
+      height="110"
       viewBox="0 0 110 110"
-      {...props}
     >
       <path d="M0 0h110v110H0z" fill="#FD0101" />
       <path
@@ -43,5 +38,3 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
         fill="#F4262A"
       />
     </svg>
-    );
-}
