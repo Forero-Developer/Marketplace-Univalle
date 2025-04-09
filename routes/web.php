@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Inertia\Inertia;
@@ -31,13 +30,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-
-route::prefix('dashboard')->group(function(){
-    route::get('contacts', [ContactController::class,'index'])->name('contact.index');
-    route::get('contacts/create', [ContactController::class,'create'])->name('contacts.create');
-});
 
 
 require __DIR__.'/settings.php';
