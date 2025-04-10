@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Inertia\Inertia;
@@ -11,10 +11,21 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+// Rutas protegidas para usuarios autenticados y verificados
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    // Dashboard con lista de productos
+    Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
+
+    // Vista para crear producto (formulario)
+    Route::get('/products/create', function () {
+        return Inertia::render('CreateProduct'); // Asegúrate que CreateProduct.jsx existe
+    })->name('products.create');
+
+    // Guardar producto en la base de datos
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
 });
 
 Route::get('/verify-email', function () {
@@ -31,13 +42,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-
-route::prefix('dashboard')->group(function(){
-    route::get('contacts', [ContactController::class,'index'])->name('contact.index');
-    route::get('contacts/create', [ContactController::class,'create'])->name('contacts.create');
-});
 
 
 require __DIR__.'/settings.php';

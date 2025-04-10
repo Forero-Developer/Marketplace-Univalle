@@ -158,7 +158,8 @@ export default function Welcome() {
             className="w-full flex items-center justify-center py-12 md:py-24 lg:py-32 bg-red-50"
           >
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" />
+              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" 
+              />
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold text-red-700 sm:text-4xl">Acerca de MarketplaceUnivalle</h2>
                 <p className="text-gray-600 md:text-xl">
