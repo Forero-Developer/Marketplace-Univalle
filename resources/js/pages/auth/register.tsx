@@ -1,7 +1,8 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, LogOut } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { motion } from 'framer-motion';
+
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -60,9 +61,15 @@ export default function Register() {
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                className="md:w-1/2 w-full flex items-center justify-center bg-white p-8"
+                className="relative md:w-1/2 w-full flex items-center justify-center bg-white p-8"
             >
+                <div className='absolute top-4 right-4 '>
+                    <TextLink href={route('home')}>
+                        <LogOut/>  
+                    </TextLink>
+                </div>
                 <div className="w-full max-w-md">
+                    
                     <AuthLayout
                         title="Create an account"
                         description="Enter your details below to create your account"
