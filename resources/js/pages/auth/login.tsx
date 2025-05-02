@@ -65,7 +65,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                className="relative md:w-1/2 w-full flex items-center justify-center p-8 bg-white overflow-y-auto"
+                className="relative md:w-1/2 w-full flex items-center justify-center p-8 bg-white"
             >
                 <div className='absolute top-4 right-4 '>
                     <TextLink href={route('home')}>

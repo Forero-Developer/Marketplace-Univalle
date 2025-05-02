@@ -40,7 +40,7 @@ export default function CreateProduct() {
 
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
         <div>
-          <label className="block font-semibold">Nombre</label>
+          <label className="block font-semibold">Nombre Del Producto</label>
           <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} className="input" />
           {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
         </div>

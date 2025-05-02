@@ -12,7 +12,8 @@ Route::get('/', function () {
 })->name('home');
 
 // Rutas protegidas para usuarios autenticados y verificados
-Route::middleware(['auth', 'verified'])->group(function () {
+//Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Dashboard con lista de productos
     Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
 
