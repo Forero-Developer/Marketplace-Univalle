@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -11,7 +12,7 @@ class ProductController extends Controller
     // Mostrar todos los productos en el dashboard
     public function index()
     {
-        $products = Product::latest()->get();
+        $products = Product::with('user')->get();
 
         return Inertia::render('dashboard', [
             'products' => $products,
