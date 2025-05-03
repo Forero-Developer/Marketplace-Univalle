@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
@@ -13,9 +14,9 @@ interface ProductCardProps {
     images: string[];
     user_id: number;
     user: {
-        id: number;
-        name: string;
-      };
+      id: number;
+      name: string;
+    };
   };
   currentUserId: number;
   loadingId: number | null;
@@ -28,6 +29,8 @@ export default function ProductCard({
   loadingId,
   setLoadingId,
 }: ProductCardProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const handleDelete = () => {
     if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       setLoadingId(product.id);
@@ -37,62 +40,98 @@ export default function ProductCard({
     }
   };
 
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    );
+  };
+
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
-  
-  {/* Sección de imagen con botón superpuesto */}
-  <div className="relative">
-    {product.images.length > 0 && (
-      <img
-        src={`/storage/${product.images[0]}`}
-        alt={product.name}
-        className="w-full h-48 object-cover"
-      />
-    )}
-    
-    {/* Botón de eliminar (posicionado en la esquina superior derecha) */}
-    {product.user_id === currentUserId && (
-      <button
-        onClick={handleDelete}
-        disabled={loadingId === product.id}
-        className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
-      >
-        {loadingId === product.id && (
-          <LoaderCircle className="animate-spin w-5 h-5" />
+    <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+      {/* Imagen con carrusel */}
+      <div className="relative">
+        {product.images.length > 0 && (
+          <>
+            <img
+              src={`/storage/${product.images[currentImageIndex]}`}
+              alt={`${product.name} - imagen ${currentImageIndex + 1}`}
+              className="w-full h-64 sm:h-80 object-cover transition-all duration-300 ease-in-out"
+            />
+            {product.images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full text-gray-800 shadow-md hover:bg-red-500 hover:text-white transition-all"
+                  aria-label="Imagen anterior"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full text-gray-800 shadow-md hover:bg-red-500 hover:text-white transition-all"
+                  aria-label="Imagen siguiente"
+                >
+                  ›
+                </button>
+              </>
+            )}
+          </>
         )}
-        {!loadingId && <span className="sr-only">Eliminar</span>}
-      </button>
-    )}
-  </div>
-  
-  {/* Contenido de la tarjeta */}
-  <div className="p-4">
-    {/* Título del producto */}
-    <h2 className="text-xl font-semibold text-gray-800 mb-1">{product.name}</h2>
-    
-    {/* Categoría y condición en una línea con punto separador */}
-    <div className="flex items-center text-sm text-gray-600 mb-1">
-      <span>{product.faculty}</span>
-      <span className="mx-1">•</span>
-      <span>{product.condition}</span>
+
+        {/* Botón de eliminar */}
+        {product.user_id === currentUserId && (
+          <button
+            onClick={handleDelete}
+            disabled={loadingId === product.id}
+            className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-all"
+          >
+            {loadingId === product.id ? (
+              <LoaderCircle className="animate-spin w-5 h-5" />
+            ) : (
+              <span className="sr-only">Eliminar</span>
+            )}
+          </button>
+        )}
+      </div>
+
+      {/* Detalles del producto */}
+      <div className="p-4">
+        {/* Nombre del producto */}
+        <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-wider">
+          {product.name}
+        </h2>
+
+        {/* Facultad y condición */}
+        <div className="flex items-center text-sm text-gray-600 mb-2">
+          <span className="uppercase">{product.faculty}</span>
+          <span className="mx-1">•</span>
+          <span className="uppercase">{product.condition}</span>
+        </div>
+
+        {/* Vendedor */}
+        <p className="text-sm text-gray-600 mb-2">
+          <span className="font-semibold">Vendedor:</span> {product.user.name}
+        </p>
+
+        {/* Precio */}
+        <p className="text-2xl font-bold text-red-600 mb-4">
+          ${new Intl.NumberFormat('es-ES').format(product.price)}
+        </p>
+
+        {/* Botones de acción */}
+        <div className="flex gap-2">
+          <button className="flex-1 border border-gray-300 rounded py-2 px-4 text-gray-700 hover:bg-gray-100 transition-all">
+            Contactar
+          </button>
+          <button className="flex-1 bg-red-600 text-white rounded py-2 px-4 hover:bg-red-700 transition-all">
+            Añadir
+          </button>
+        </div>
+      </div>
     </div>
-    
-    {/* Información del vendedor */}
-    <p className="text-sm text-gray-600 mb-2">Vendedor: {product.user.name}</p>
-    
-    {/* Precio destacado */}
-    <p className="text-xl font-bold text-red-600 mb-4">${product.price}</p>
-    
-    {/* Botones de acción */}
-    <div className="flex gap-2">
-      <button className="flex items-center justify-center gap-1 border border-gray-300 rounded py-2 px-4 text-gray-700 hover:bg-gray-50 flex-1">
-        <span>Contactar</span>
-      </button>
-      <button className="flex items-center justify-center gap-1 bg-red-600 text-white rounded py-2 px-4 hover:bg-red-700 flex-1">
-        <span>Añadir</span>
-      </button>
-    </div>
-  </div>
-</div>
   );
 }

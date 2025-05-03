@@ -39,7 +39,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <div className="flex flex-col md:flex-row h-screen overflow-hidden w-full">
+        <div className="flex flex-col md:flex-row h-screen w-full">
             {/* Panel Izquierdo con animación */}
             <motion.div
                 initial={{ x: -50, opacity: 0 }}
@@ -114,6 +114,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 />
                                 <InputError message={errors.password} />
                             </div>
+                            
 
                             <div className="flex items-center space-x-3">
                                 <Checkbox
