@@ -12,7 +12,7 @@ class ProductController extends Controller
     // Mostrar todos los productos en el dashboard
     public function index()
     {
-        $products = Product::with('user')->get();
+        $products = Product::with('user')->paginate(6);
 
         return Inertia::render('dashboard', [
             'products' => $products,
@@ -64,5 +64,36 @@ class ProductController extends Controller
     
     return redirect()->route('dashboard')->with('success', 'Producto eliminado con éxito.');
 }
+
+public function loadMore(Request $request)
+{
+    $page = $request->query('page', 2);
+    $search = $request->query('search', '');
+    $category = $request->query('category', '');
+    $faculty = $request->query('faculty', '');
+
+    $query = Product::with('user');
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('category', 'like', "%$search%")
+              ->orWhere('faculty', 'like', "%$search%");
+        });
+    }
+
+    if ($category) {
+        $query->where('category', $category);
+    }
+
+    if ($faculty) {
+        $query->where('faculty', $faculty);
+    }
+
+    $products = $query->paginate(6, ['*'], 'page', $page);
+
+    return response()->json($products->items());
+}
+
 
 }

@@ -27,6 +27,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
+    
+    Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
+
 });
 
 Route::get('/verify-email', function () {

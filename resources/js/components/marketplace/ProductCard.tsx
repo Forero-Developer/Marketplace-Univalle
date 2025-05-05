@@ -101,7 +101,7 @@ export default function ProductCard({
       {/* Detalles del producto */}
       <div className="p-4">
         {/* Nombre del producto */}
-        <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-wider">
+        <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-tight">
           {product.name}
         </h2>
 
@@ -113,8 +113,8 @@ export default function ProductCard({
         </div>
 
         {/* Vendedor */}
-        <p className="text-sm text-gray-600 mb-2">
-          <span className="font-semibold">Vendedor:</span> {product.user.name}
+        <p className="uppercase text-sm text-gray-600 mb-2">
+          <span className="font-semibold">Vendedor:</span > {product.user.name}
         </p>
 
         {/* Precio */}
