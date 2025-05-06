@@ -20,6 +20,16 @@ export default function CreateProduct() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
+  
+      // Validar que solo sean imágenes jpeg, png o jpg
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const invalidFiles = filesArray.filter(file => !validTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Solo puedes subir imágenes en formato JPEG, PNG o JPG.');
+        return; // Detener el proceso si hay archivos inválidos
+      }
+  
       setData('images', filesArray);
       const previews = filesArray.map(file => URL.createObjectURL(file));
       setImagePreviews(previews);
@@ -28,9 +38,18 @@ export default function CreateProduct() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    if (data.images.length === 0) {
+      alert('Debes seleccionar al menos una imagen del producto.');
+      return;
+    }
+  
     post(route('products.store'), {
       preserveScroll: true,
-      onSuccess: () => reset(),
+      onSuccess: () => {
+        reset();
+        setImagePreviews([]);
+      },
     });
   };
 
