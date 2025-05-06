@@ -40,6 +40,11 @@ export default function ProductCard({
     }
   };
 
+  const handleContact = () => {
+    router.post(route('conversations.start', product.id));
+  };
+  
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
   };
@@ -52,7 +57,6 @@ export default function ProductCard({
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-      {/* Imagen con carrusel */}
       <div className="relative">
         {product.images.length > 0 && (
           <>
@@ -82,7 +86,6 @@ export default function ProductCard({
           </>
         )}
 
-        {/* Botón de eliminar */}
         {product.user_id === currentUserId && (
           <button
             onClick={handleDelete}
@@ -98,35 +101,31 @@ export default function ProductCard({
         )}
       </div>
 
-      {/* Detalles del producto */}
       <div className="p-4">
-        {/* Nombre del producto */}
         <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-tight">
           {product.name}
         </h2>
-
-        {/* Facultad y condición */}
         <div className="flex items-center text-sm text-gray-600 mb-2">
           <span className="uppercase">{product.faculty}</span>
           <span className="mx-1">•</span>
           <span className="uppercase">{product.condition}</span>
         </div>
-
-        {/* Vendedor */}
         <p className="uppercase text-sm text-gray-600 mb-2">
-          <span className="font-semibold">Vendedor:</span > {product.user.name}
+          <span className="font-semibold">Vendedor:</span> {product.user.name}
         </p>
-
-        {/* Precio */}
         <p className="text-2xl font-bold text-red-600 mb-4">
           ${new Intl.NumberFormat('es-ES').format(product.price)}
         </p>
 
-        {/* Botones de acción */}
         <div className="flex gap-2">
-          <button className="flex-1 border border-gray-300 rounded py-2 px-4 text-gray-700 hover:bg-gray-100 transition-all">
-            Contactar
-          </button>
+          {product.user_id !== currentUserId && (
+            <button
+              onClick={handleContact}
+              className="flex-1 border border-gray-300 rounded py-2 px-4 text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              Contactar
+            </button>
+          )}
           <button className="flex-1 bg-red-600 text-white rounded py-2 px-4 hover:bg-red-700 transition-all">
             Añadir
           </button>
