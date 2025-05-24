@@ -4,20 +4,55 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
     // Mostrar todos los productos en el dashboard
-    public function index()
-    {
-        $products = Product::latest()->get();
+    public function index(Request $request)
+{
+    $search = $request->query('search', '');
+    $category = $request->query('category', '');
+    $faculty = $request->query('faculty', '');
 
-        return Inertia::render('dashboard', [
-            'products' => $products,
-            'userId' => request()->user()->id,
-        ]);
+    $query = Product::with('user');
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('category', 'like', "%$search%")
+              ->orWhere('faculty', 'like', "%$search%");
+        });
     }
+
+    if ($category) {
+        $query->where('category', $category);
+    }
+
+    if ($faculty) {
+        $query->where('faculty', $faculty);
+    }
+
+    $products = $query->paginate(6);
+
+    // 🔥 Obtén todas las categorías y facultades únicas
+    $allCategories = Product::select('category')->distinct()->pluck('category');
+    $allFaculties = Product::select('faculty')->distinct()->pluck('faculty');
+
+    return Inertia::render('dashboard', [
+        'products' => $products,
+        'userId' => $request->user()->id,
+        'filters' => [
+            'search' => $search,
+            'category' => $category,
+            'faculty' => $faculty,
+        ],
+        'allCategories' => $allCategories,
+        'allFaculties' => $allFaculties,
+    ]);
+}
+    
 
     // Guardar un nuevo producto
     public function store(Request $request)
@@ -29,7 +64,7 @@ class ProductController extends Controller
             'category' => 'required|string|max:100',
             'condition' => 'required|string|max:100',
             'faculty' => 'required|string|max:100',
-            'images' => 'nullable|array',
+            'images' => 'required|array|min:1',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -63,5 +98,36 @@ class ProductController extends Controller
     
     return redirect()->route('dashboard')->with('success', 'Producto eliminado con éxito.');
 }
+
+public function loadMore(Request $request)
+{
+    $page = $request->query('page', 2);
+    $search = $request->query('search', '');
+    $category = $request->query('category', '');
+    $faculty = $request->query('faculty', '');
+
+    $query = Product::with('user');
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('category', 'like', "%$search%")
+              ->orWhere('faculty', 'like', "%$search%");
+        });
+    }
+
+    if ($category) {
+        $query->where('category', $category);
+    }
+
+    if ($faculty) {
+        $query->where('faculty', $faculty);
+    }
+
+    $products = $query->paginate(6, ['*'], 'page', $page);
+
+    return response()->json($products->items());
+}
+
 
 }

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -12,7 +15,8 @@ Route::get('/', function () {
 })->name('home');
 
 // Rutas protegidas para usuarios autenticados y verificados
-Route::middleware(['auth', 'verified'])->group(function () {
+//Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Dashboard con lista de productos
     Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
 
@@ -25,6 +29,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Rutas del chat
+    Route::get('/chat/start/{userId}', [ChatController::class, 'getOrCreateConversation'])->name('chat.start');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+
+    Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+
+    // Ruta para guardar el mensaje
+    Route::post('/messages/{conversationId}', [MessageController::class, 'store'])->name('messages.store');
+
+    Route::post('/conversations/start/{product}', [ConversationController::class, 'start'])->name('conversations.start');
+
+    
+    Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
 
 });
 
