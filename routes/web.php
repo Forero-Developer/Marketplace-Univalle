@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Inertia\Inertia;
@@ -11,10 +14,38 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+// Rutas protegidas para usuarios autenticados y verificados
+//Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+    // Dashboard con lista de productos
+    Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
+
+    // Vista para crear producto (formulario)
+    Route::get('/products/create', function () {
+        return Inertia::render('CreateProduct'); // Asegúrate que CreateProduct.jsx existe
+    })->name('products.create');
+
+    // Guardar producto en la base de datos
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Rutas del chat
+    Route::get('/chat/start/{userId}', [ChatController::class, 'getOrCreateConversation'])->name('chat.start');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+
+    Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+
+    // Ruta para guardar el mensaje
+    Route::post('/messages/{conversationId}', [MessageController::class, 'store'])->name('messages.store');
+
+    Route::post('/conversations/start/{product}', [ConversationController::class, 'start'])->name('conversations.start');
+
+    
+    Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
+
 });
 
 Route::get('/verify-email', function () {
@@ -31,13 +62,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-
-route::prefix('dashboard')->group(function(){
-    route::get('contacts', [ContactController::class,'index'])->name('contact.index');
-    route::get('contacts/create', [ContactController::class,'create'])->name('contacts.create');
-});
 
 
 require __DIR__.'/settings.php';
