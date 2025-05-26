@@ -70,7 +70,7 @@ export default function CreateProduct() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex items-center justify-center bg-white px-12 py-12"
+      className="min-h-screen flex items-center justify-center bg-white px-12 py-12 text-black"
     >
       <div className="relative w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <div className="absolute top-4 right-4">
@@ -80,7 +80,7 @@ export default function CreateProduct() {
 
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-5">
           <div>
-            <label htmlFor="name" className="block font-semibold">Nombre del producto</label>
+            <label htmlFor="name" className="block font-semibold text-black">Nombre del producto</label>
             <input
               type="text"
               name="name"
@@ -93,7 +93,7 @@ export default function CreateProduct() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block font-semibold">Descripción</label>
+            <label htmlFor="description" className="block font-semibold text-black">Descripción</label>
             <textarea
               name="description"
               id="description"
@@ -104,7 +104,7 @@ export default function CreateProduct() {
           </div>
 
           <div>
-            <label htmlFor="price" className="block font-semibold">Precio</label>
+            <label htmlFor="price" className="block font-semibold text-black">Precio</label>
             <input
               type="number"
               name="price"
@@ -118,13 +118,13 @@ export default function CreateProduct() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="category" className="block font-semibold">Categoría</label>
+              <label htmlFor="category" className="block font-semibold text-black">Categoría</label>
               <select
                 name="category"
                 id="category"
                 value={data.category}
                 onChange={e => setData('category', e.target.value)}
-                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer text-black"
               >
                 <option value="">Selecciona una categoría</option>
                 <option value="Electronicos">Electrónicos</option>
@@ -135,13 +135,13 @@ export default function CreateProduct() {
             </div>
 
             <div>
-              <label htmlFor="condition" className="block font-semibold">Estado</label>
+              <label htmlFor="condition" className="block font-semibold text-black">Estado</label>
               <select
                 name="condition"
                 id="condition"
                 value={data.condition}
                 onChange={e => setData('condition', e.target.value)}
-                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer text-black"
               >
                 <option value="">Selecciona el estado</option>
                 <option value="Nuevo">Nuevo</option>
@@ -152,13 +152,13 @@ export default function CreateProduct() {
           </div>
 
           <div>
-            <label htmlFor="faculty" className="block font-semibold">Facultad</label>
+            <label htmlFor="faculty" className="block font-semibold text-black">Facultad</label>
             <select
               name="faculty"
               id="faculty"
               value={data.faculty}
               onChange={e => setData('faculty', e.target.value)}
-              className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+              className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer text-black"
             >
               <option value="">Selecciona la facultad</option>
               <option value="Ingeniería">Ingeniería</option>
@@ -171,7 +171,7 @@ export default function CreateProduct() {
           </div>
 
           <div>
-            <label htmlFor="images" className="block font-semibold">Imágenes</label>
+            <label htmlFor="images" className="block font-semibold text-black">Imágenes</label>
             <div className="border border-dashed border-gray-400 p-4 rounded-lg bg-gray-50">
               <input
                 type="file"

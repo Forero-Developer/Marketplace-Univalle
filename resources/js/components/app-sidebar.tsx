@@ -49,16 +49,7 @@ const footerNavItems: NavItem[] = [
         title: 'Campus Virtual',
         href: 'https://campusvirtual.univalle.edu.co/moodle/login/index.php',
         icon: Folder,
-<<<<<<< HEAD
-    },
-    {
-        title: 'Titulo Documentacion',
-        href: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
-    },
-=======
     }
->>>>>>> abc7bd752484ad54d9e20a979a3495fa73082199
 ];
 
 export function AppSidebar() {
