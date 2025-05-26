@@ -12,11 +12,14 @@ class ProductController extends Controller
     // Mostrar todos los productos en el dashboard
     public function index(Request $request)
 {
+    $userId = $request->user()->id; // Usuario autenticado
+
     $search = $request->query('search', '');
     $category = $request->query('category', '');
     $faculty = $request->query('faculty', '');
 
-    $query = Product::with('user');
+    $query = Product::with('user')
+        ->where('user_id', '!=', $userId); // Filtra productos que NO son del usuario
 
     if ($search) {
         $query->where(function ($q) use ($search) {
@@ -36,13 +39,12 @@ class ProductController extends Controller
 
     $products = $query->paginate(6);
 
-    // 🔥 Obtén todas las categorías y facultades únicas
     $allCategories = Product::select('category')->distinct()->pluck('category');
     $allFaculties = Product::select('faculty')->distinct()->pluck('faculty');
 
     return Inertia::render('dashboard', [
         'products' => $products,
-        'userId' => $request->user()->id,
+        'userId' => $userId,
         'filters' => [
             'search' => $search,
             'category' => $category,
@@ -52,6 +54,22 @@ class ProductController extends Controller
         'allFaculties' => $allFaculties,
     ]);
 }
+
+ public function misProductos(Request $request)
+    {
+        $user = $request->user();
+
+        $products = Product::with('user')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('misProductos', [
+            'products' => $products,
+            'userId' => $user->id,
+        ]);
+    }
     
 
     // Guardar un nuevo producto
@@ -96,17 +114,20 @@ class ProductController extends Controller
     
     $product->delete();
     
-    return redirect()->route('dashboard')->with('success', 'Producto eliminado con éxito.');
+    return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
 }
 
 public function loadMore(Request $request)
 {
+    $userId = $request->user()->id;
+
     $page = $request->query('page', 2);
     $search = $request->query('search', '');
     $category = $request->query('category', '');
     $faculty = $request->query('faculty', '');
 
-    $query = Product::with('user');
+    $query = Product::with('user')
+        ->where('user_id', '!=', $userId); // Filtrar productos distintos al usuario
 
     if ($search) {
         $query->where(function ($q) use ($search) {
@@ -126,7 +147,7 @@ public function loadMore(Request $request)
 
     $products = $query->paginate(6, ['*'], 'page', $page);
 
-    return response()->json($products->items());
+    return response()->json($products);
 }
 
 

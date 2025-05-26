@@ -1,8 +1,8 @@
-import TextLink from '@/components/text-link';
 import { useForm } from '@inertiajs/react';
-import { LogOut } from 'lucide-react';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { motion } from 'framer-motion';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
 
 export default function CreateProduct() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,6 +14,17 @@ export default function CreateProduct() {
     faculty: '',
     images: [] as File[] ,
   });
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      title: 'Dashboard',
+      href: '/dashboard',
+    },
+    {
+      title: 'Nuevo producto',
+      href: route('misProductos.index'),
+    },
+  ];
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -54,17 +65,15 @@ export default function CreateProduct() {
   };
 
   return (
+    <AppLayout breadcrumbs={breadcrumbs}>
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex items-center justify-center bg-gray-100 px-12 py-12"
+      className="min-h-screen flex items-center justify-center bg-white px-12 py-12"
     >
-      <div className="relative w-full max-w-3xl p-8 bg-white rounded-2xl shadow-xl">
+      <div className="relative w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <div className="absolute top-4 right-4">
-          <TextLink href={route('dashboard')}>
-            <LogOut />
-          </TextLink>
         </div>
 
         <h2 className="text-3xl font-bold mb-6 text-red-600 text-center">Publicar producto</h2>
@@ -118,9 +127,10 @@ export default function CreateProduct() {
                 className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
               >
                 <option value="">Selecciona una categoría</option>
-                <option value="Tecnología">Tecnología</option>
+                <option value="Electronicos">Electrónicos</option>
                 <option value="Libros">Libros</option>
-                <option value="Otro">Otro</option>
+                <option value="Comida">Comida</option>
+                <option value="Otros">Otros</option>
               </select>
             </div>
 
@@ -201,5 +211,6 @@ export default function CreateProduct() {
         </form>
       </div>
     </motion.div>
+    </AppLayout>
   );
 }
