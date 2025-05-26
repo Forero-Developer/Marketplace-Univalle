@@ -4,28 +4,52 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { ShoppingCart,Folder, Home, MessageCircle, ShoppingBag, Heart, Store } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Inicio',
         href: '/dashboard',
-        icon: LayoutGrid,
+        icon: Home,
     },
+
+    {
+        title: 'Mis compras',
+        href: '/dashboard',
+        icon: ShoppingBag,
+    },
+    {
+        title: 'Favoritos',
+        href: '/dashboard',
+        icon: Heart,
+    },
+
+    {
+        title: 'Mensajes',
+        href: route('conversations.index'),
+        icon: MessageCircle,
+    },
+    {
+        title: 'Mis Ventas',
+        href: route('misProductos.index'),
+        icon: Store,
+    },
+    {
+        title: 'Carrito',
+        href: '/dashboard',
+        icon: ShoppingCart,
+    },
+
+
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
+        title: 'Campus Virtual',
+        href: 'https://campusvirtual.univalle.edu.co/moodle/login/index.php',
         icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
-    },
+    }
 ];
 
 export function AppSidebar() {

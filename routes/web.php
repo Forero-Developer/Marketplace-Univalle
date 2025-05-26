@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
+    Route::get('/mis-productos', [ProductController::class, 'misProductos'])->name('misProductos.index');
+
     // Rutas del chat
     Route::get('/chat/start/{userId}', [ChatController::class, 'getOrCreateConversation'])->name('chat.start');
     Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
