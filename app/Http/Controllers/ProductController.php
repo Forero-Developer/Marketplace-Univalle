@@ -12,14 +12,14 @@ class ProductController extends Controller
     // Mostrar todos los productos en el dashboard
     public function index(Request $request)
 {
-    $userId = $request->user()->id; // Usuario autenticado
+    $userId = $request->user()->id;
 
     $search = $request->query('search', '');
     $category = $request->query('category', '');
     $faculty = $request->query('faculty', '');
 
     $query = Product::with('user')
-        ->where('user_id', '!=', $userId); // Filtra productos que NO son del usuario
+        ->where('user_id', '!=', $userId);
 
     if ($search) {
         $query->where(function ($q) use ($search) {
@@ -37,7 +37,12 @@ class ProductController extends Controller
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(6);
+    $favoriteProductIds = $request->user()->favorites()->pluck('product_id')->toArray();
+
+    $products = $query->paginate(8)->through(function ($product) use ($favoriteProductIds) {
+        $product->isFavorited = in_array($product->id, $favoriteProductIds);
+        return $product;
+    });
 
     $allCategories = Product::select('category')->distinct()->pluck('category');
     $allFaculties = Product::select('faculty')->distinct()->pluck('faculty');
@@ -54,6 +59,7 @@ class ProductController extends Controller
         'allFaculties' => $allFaculties,
     ]);
 }
+
 
  public function misProductos(Request $request)
     {
@@ -145,7 +151,7 @@ public function loadMore(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(6, ['*'], 'page', $page);
+    $products = $query->paginate(8, ['*'], 'page', $page);
 
     return response()->json($products);
 }

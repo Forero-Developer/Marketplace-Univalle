@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ShoppingCart,Folder, Home, MessageCircle, ShoppingBag, Heart, Store } from 'lucide-react';
+import { Folder, Home, MessageCircle,Heart, Store } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -13,15 +13,9 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: Home,
     },
-
-    {
-        title: 'Mis compras',
-        href: '/dashboard',
-        icon: ShoppingBag,
-    },
     {
         title: 'Favoritos',
-        href: '/dashboard',
+        href: route('favorites.index'),
         icon: Heart,
     },
 
@@ -34,12 +28,7 @@ const mainNavItems: NavItem[] = [
         title: 'Mis Ventas',
         href: route('misProductos.index'),
         icon: Store,
-    },
-    {
-        title: 'Carrito',
-        href: '/dashboard',
-        icon: ShoppingCart,
-    },
+    }
 
 
 ];

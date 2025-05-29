@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import TextLink from '@/components/text-link';
-import {PlusIcon, } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FiltersBar from '@/components/marketplace/FiltersBar';
 import ProductGrid from '@/components/marketplace/ProductGrid';
@@ -21,6 +21,7 @@ interface Product {
     id: number;
     name: string;
   };
+  isFavorited?: boolean; // <-- asegúrate que el backend envíe esto
 }
 
 interface Props {
@@ -56,7 +57,7 @@ export default function Dashboard({
   const [search, setSearch] = useState(filters.search || '');
   const [category, setCategory] = useState(filters.category || '');
   const [faculty, setFaculty] = useState(filters.faculty || '');
-  const [allProducts, setAllProducts] = useState(products.data);
+  const [allProducts, setAllProducts] = useState(products.data || []);
   const [page, setPage] = useState(products.current_page);
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [lastPage, setLastPage] = useState(products.last_page);
@@ -77,13 +78,25 @@ export default function Dashboard({
     return () => clearTimeout(delayDebounce);
   }, [search, category, faculty]);
 
-  // Actualiza productos si cambian desde backend
+  // Actualiza productos si cambian desde backend (por ejemplo, filtros)
   useEffect(() => {
-  setAllProducts(products.data);
-  setPage(products.current_page);
-  setLastPage(products.last_page); // Asegúrate que llegue en los props
+    setAllProducts(products.data);
+    setPage(products.current_page);
+    setLastPage(products.last_page);
   }, [products]);
 
+  // Función para manejar el toggle favorito y actualizar el estado local
+  function handleToggleFavorite(productId: number, favorited: boolean) {
+    setAllProducts(prevProducts =>
+      prevProducts.map(product =>
+        product.id === productId
+          ? { ...product, isFavorited: favorited }
+          : product
+      )
+    );
+  }
+
+  // Cargar más productos para paginación
   const loadMoreProducts = async () => {
     const nextPage = page + 1;
     const params = new URLSearchParams({
@@ -101,49 +114,49 @@ export default function Dashboard({
     setLastPage(data.last_page);
   };
 
-return (
-  <AppLayout breadcrumbs={breadcrumbs}>
-    <Head title="Dashboard" />
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Dashboard" />
 
-    <div className="p-6">
-      <TextLink
-        href={route("products.create")}
-        className="absolute right-4 inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded no-underline"
-      >
-        <PlusIcon className="h-4 w-4" />
-        Vender
-      </TextLink>
+      <div className="p-6 relative">
+        <TextLink
+          href={route("products.create")}
+          className="absolute right-4 inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded no-underline"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Vender
+        </TextLink>
 
-      <h1 className="text-2xl font-bold text-black-600 mb-1">Marketplace Univalle</h1>
-      <p className="text-gray-500 mb-4">
-        Compra y vende productos <br />dentro de la comunidad <br />universitaria.
-      </p>
+        <h1 className="text-2xl font-bold text-black-600 mb-1">Marketplace Univalle</h1>
+        <p className="text-gray-500 mb-4">
+          Compra y vende productos <br />dentro de la comunidad <br />universitaria.
+        </p>
 
-      <FiltersBar
-        search={search}
-        category={category}
-        faculty={faculty}
-        onSearchChange={setSearch}
-        onCategoryChange={setCategory}
-        onFacultyChange={setFaculty}
-        categories={allCategories}
-        faculties={allFaculties}
-      />
-
-      {allProducts.length === 0 ? (
-        <p className="text-gray-500">No se encontraron productos.</p>
-      ) : (
-        <ProductGrid
-          products={allProducts}  // Ya viene filtrado backend
-          userId={userId}
-          loadingId={loadingId}
-          setLoadingId={setLoadingId}
-          showLoadMore={page < lastPage}
-          onLoadMore={loadMoreProducts}
+        <FiltersBar
+          search={search}
+          category={category}
+          faculty={faculty}
+          onSearchChange={setSearch}
+          onCategoryChange={setCategory}
+          onFacultyChange={setFaculty}
+          categories={allCategories}
+          faculties={allFaculties}
         />
-      )}
-    </div>
-  </AppLayout>
-);
 
+        {allProducts.length === 0 ? (
+          <p className="text-gray-500">No se encontraron productos.</p>
+        ) : (
+          <ProductGrid
+            products={allProducts || []} // importante
+            userId={userId}
+            loadingId={loadingId}
+            setLoadingId={setLoadingId}
+            showLoadMore={page < lastPage}
+            onLoadMore={loadMoreProducts}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        )}
+      </div>
+    </AppLayout>
+  );
 }

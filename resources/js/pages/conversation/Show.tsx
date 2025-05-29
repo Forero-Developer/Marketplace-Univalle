@@ -23,11 +23,19 @@ interface ShowProps {
   currentUserId: number;
 }
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-      title: 'Dashboard',
-      href: '/dashboard',
-    },
-  ];
+  {
+    title: 'Inicio',
+    href: '/dashboard',
+  },
+  {
+    title: 'Conversaciones',
+    href: route('conversations.index'),
+  },
+  {
+    title: 'Mensajes',
+    href: route('conversations.show', { conversation: 0 }), // Placeholder, will be replaced by actual conversation ID
+  },
+];
 
 export default function Show({ conversation, messages, currentUserId }: ShowProps) {
   const { data, setData, post, processing } = useForm<MessageForm>({

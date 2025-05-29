@@ -1,26 +1,30 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Heart, MessageCircle, Trash2, Edit } from 'lucide-react'; // Importa Edit y Trash2
 
-interface ProductCardProps {
-  product: {
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  condition: string;
+  faculty: string;
+  images: string[];
+  user_id: number;
+  user: {
     id: number;
     name: string;
-    description: string;
-    price: number;
-    category: string;
-    condition: string;
-    faculty: string;
-    images: string[];
-    user_id: number;
-    user: {
-      id: number;
-      name: string;
-    };
   };
+}
+
+interface ProductCardProps {
+  product: Product;
   currentUserId: number;
   loadingId: number | null;
   setLoadingId: (id: number | null) => void;
+  isFavorited?: boolean;
+  onToggleFavorite?: (productId: number, favorited: boolean) => void;
 }
 
 export default function ProductCard({
@@ -28,8 +32,12 @@ export default function ProductCard({
   currentUserId,
   loadingId,
   setLoadingId,
+  isFavorited,
+  onToggleFavorite,
 }: ProductCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(isFavorited);
+  const [togglingFavorite, setTogglingFavorite] = useState(false);
 
   const handleDelete = () => {
     if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
@@ -40,10 +48,13 @@ export default function ProductCard({
     }
   };
 
+  const handleEdit = () => {
+    router.get(route('products.edit', product.id));
+  };
+
   const handleContact = () => {
     router.post(route('conversations.start', product.id));
   };
-  
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
@@ -53,6 +64,33 @@ export default function ProductCard({
     setCurrentImageIndex((prev) =>
       prev === 0 ? product.images.length - 1 : prev - 1
     );
+  };
+
+  const toggleFavorite = async () => {
+    if (togglingFavorite) return;
+    setTogglingFavorite(true);
+    try {
+      const response = await fetch(route('favorites.toggle', product.id), {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      const data = await response.json();
+      setIsFavorite(data.favorited);
+
+      if (onToggleFavorite) {
+        onToggleFavorite(product.id, data.favorited);
+      }
+    } catch (error) {
+      console.error('Error al cambiar favorito:', error);
+    } finally {
+      setTogglingFavorite(false);
+    }
   };
 
   return (
@@ -85,20 +123,6 @@ export default function ProductCard({
             )}
           </>
         )}
-
-        {product.user_id === currentUserId && (
-          <button
-            onClick={handleDelete}
-            disabled={loadingId === product.id}
-            className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-all"
-          >
-            {loadingId === product.id ? (
-              <LoaderCircle className="animate-spin w-5 h-5" />
-            ) : (
-              <span className="sr-only">Eliminar</span>
-            )}
-          </button>
-        )}
       </div>
 
       <div className="p-4">
@@ -117,18 +141,56 @@ export default function ProductCard({
           ${new Intl.NumberFormat('es-ES').format(product.price)}
         </p>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-4">
           {product.user_id !== currentUserId && (
-            <button
-              onClick={handleContact}
-              className="flex-1 border border-gray-300 rounded py-2 px-4 text-gray-700 hover:bg-gray-100 transition-all"
-            >
-              Contactar
-            </button>
+            <>
+              <button
+                onClick={handleContact}
+                className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 font-medium rounded-full py-2 px-4 hover:bg-gray-200 transition-all"
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span>Contactar</span>
+              </button>
+              <button
+                onClick={toggleFavorite}
+                disabled={togglingFavorite}
+                className={`flex items-center justify-center rounded-full p-2 transition-all ${
+                  isFavorite
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+                aria-label="Agregar a favoritos"
+              >
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-white' : ''}`} />
+              </button>
+            </>
           )}
-          <button className="flex-1 bg-red-600 text-white rounded py-2 px-4 hover:bg-red-700 transition-all">
-            Añadir
-          </button>
+
+          {product.user_id === currentUserId && (
+            <>
+              <button
+                onClick={handleEdit}
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 text-blue-700 font-medium rounded-full py-2 px-4 hover:bg-blue-200 transition-all"
+              >
+                <Edit className="w-5 h-5" />
+                <span>Editar</span>
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={loadingId === product.id}
+                className="flex-1 flex items-center justify-center gap-2 bg-red-100 text-red-700 font-medium rounded-full py-2 px-4 hover:bg-red-200 transition-all"
+              >
+                {loadingId === product.id ? (
+                  <LoaderCircle className="animate-spin w-5 h-5" />
+                ) : (
+                  <>
+                    <Trash2 className="w-5 h-5" />
+                    <span>Eliminar</span>
+                  </>
+                )}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,9 @@ Route::middleware(['auth'])->group(function () {
 
     
     Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
+     // Rutas para favoritos
+    Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
 
 });
 

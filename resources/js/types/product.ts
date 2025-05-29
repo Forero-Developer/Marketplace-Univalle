@@ -12,5 +12,6 @@ export interface Product {
       id: number;
       name: string;
     };
+    isFavorited?: boolean;
   }
   
