@@ -33,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/mis-productos', [ProductController::class, 'misProductos'])->name('misProductos.index');
 
+    // Vista para editar producto
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     // Rutas del chat
     Route::get('/chat/start/{userId}', [ChatController::class, 'getOrCreateConversation'])->name('chat.start');
     Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');

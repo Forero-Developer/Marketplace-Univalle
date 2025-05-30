@@ -54,6 +54,11 @@ export default function CreateProduct() {
       alert('Debes seleccionar al menos una imagen del producto.');
       return;
     }
+
+//     if (!data.description.trim()) {
+//   alert('La descripción es obligatoria.');
+//   return;
+// }
   
     post(route('products.store'), {
       preserveScroll: true,
@@ -84,34 +89,38 @@ export default function CreateProduct() {
             <input
               type="text"
               name="name"
-              id="name"
               value={data.name}
-              onChange={e => setData('name', e.target.value)}
-              className="input w-full border border-gray-300 rounded-lg px-4 py-2"
+              onChange={(e) => setData('name', e.target.value)}
+              className="w-full border p-2 rounded"
+              required
             />
             {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
           </div>
 
           <div>
-            <label htmlFor="description" className="block font-semibold">Descripción</label>
+            <label htmlFor="description" className="block font-semibold">
+              Descripción <span className="text-red-500">*</span>
+            </label>
             <textarea
-              name="description"
               id="description"
+              name="description"
               value={data.description}
-              onChange={e => setData('description', e.target.value)}
-              className="input w-full border border-gray-300 rounded-lg px-4 py-2"
+              onChange={(e) => setData('description', e.target.value)}
+              className="w-full border p-2 rounded"
+              required
             />
           </div>
+            {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
 
           <div>
             <label htmlFor="price" className="block font-semibold">Precio</label>
             <input
               type="number"
               name="price"
-              id="price"
               value={data.price}
-              onChange={e => setData('price', e.target.value)}
-              className="input w-full border border-gray-300 rounded-lg px-4 py-2"
+              onChange={(e) => setData('price', e.target.value)}
+              className="w-full border p-2 rounded"
+              required
             />
             {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
           </div>
@@ -121,53 +130,51 @@ export default function CreateProduct() {
               <label htmlFor="category" className="block font-semibold">Categoría</label>
               <select
                 name="category"
-                id="category"
                 value={data.category}
-                onChange={e => setData('category', e.target.value)}
-                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                onChange={(e) => setData('category', e.target.value)}
+                className="w-full border p-2 rounded"
+                required
               >
                 <option value="">Selecciona una categoría</option>
-                <option value="Electronicos">Electrónicos</option>
-                <option value="Libros">Libros</option>
-                <option value="Comida">Comida</option>
-                <option value="Otros">Otros</option>
+                <option value="tecnologia">Tecnología</option>
+                <option value="libros">Libros</option>
+                <option value="ropa">Ropa</option>
               </select>
+              {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
             </div>
 
             <div>
               <label htmlFor="condition" className="block font-semibold">Estado</label>
               <select
-                name="condition"
-                id="condition"
+                name="estado"
                 value={data.condition}
-                onChange={e => setData('condition', e.target.value)}
-                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                onChange={(e) => setData('condition', e.target.value)}
+                className="w-full border p-2 rounded"
+                required
               >
                 <option value="">Selecciona el estado</option>
-                <option value="Nuevo">Nuevo</option>
-                <option value="Como nuevo">Como nuevo</option>
-                <option value="Usado">Usado</option>
+                <option value="nuevo">Nuevo</option>
+                <option value="usado">Usado</option>
               </select>
+              {errors.condition && <span className="text-red-500 text-sm">{errors.condition}</span>}
             </div>
           </div>
 
           <div>
             <label htmlFor="faculty" className="block font-semibold">Facultad</label>
             <select
-              name="faculty"
-              id="faculty"
+              name="facultad"
               value={data.faculty}
-              onChange={e => setData('faculty', e.target.value)}
-              className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+              onChange={(e) => setData('faculty', e.target.value)}
+              className="w-full border p-2 rounded"
+              required
             >
-              <option value="">Selecciona la facultad</option>
-              <option value="Ingeniería">Ingeniería</option>
-              <option value="Medicina">Medicina</option>
-              <option value="Derecho">Derecho</option>
-              <option value="Ciencias Sociales">Ciencias Sociales</option>
-              <option value="Artes">Artes</option>
-              <option value="Otra">Otra</option>
+              <option value="">Selecciona una facultad</option>
+              <option value="ingenieria">Ingeniería</option>
+              <option value="derecho">Derecho</option>
+              <option value="medicina">Medicina</option>
             </select>
+            {errors.faculty && <span className="text-red-500 text-sm">{errors.faculty}</span>}
           </div>
 
           <div>

@@ -32,7 +32,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/dashboard',
   },
   {
-    title: 'Mis productos',
+    title: 'Mis Favoritos',
     href: '/mis-productos',
   },
 ];

@@ -62,24 +62,39 @@ export default function MyProductsPage({ products, userId }: Props) {
   };
 
   const handleToggleFavorite = (productId: number, favorited: boolean) => {
-  console.log(`Producto ${productId} ha sido ${favorited ? 'añadido a favoritos' : 'eliminado de favoritos'}`);
-};
-
+    console.log(`Producto ${productId} ha sido ${favorited ? 'añadido a favoritos' : 'eliminado de favoritos'}`);
+  };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Mis productos" />
 
-      <div className="p-6">
+      <div className="p-6 sm:pt-9">
+
+        {/* Título y botón alineados horizontalmente */}
+        <div className="flex items-center justify-between flex-wrap gap-y-4 mb-4">
+          <h1 className="text-2xl font-bold text-red-600">Mis productos publicados</h1>
+
+          {/* Botón visible en pantallas grandes */}
+          <TextLink
+            href={route("products.create")}
+            className="hidden sm:inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded no-underline text-sm"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Vender
+          </TextLink>
+        </div>
+
+        <p className="text-gray-500 mb-4">Aquí puedes ver todos los productos que has publicado.</p>
+
+        {/* Botón visible en móviles */}
         <TextLink
           href={route("products.create")}
-          className="absolute right-4 inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded no-underline"
+          className="sm:hidden inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded no-underline text-base mt-2 mb-6"
         >
           <PlusIcon className="h-4 w-4" />
           Vender
         </TextLink>
-        <h1 className="text-2xl font-bold text-red-600 mb-10">Mis productos publicados</h1>
-
 
         {myProducts.length === 0 ? (
           <p className="text-gray-500">No has publicado ningún producto aún.</p>

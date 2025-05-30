@@ -83,7 +83,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string|min:1|max:1000',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100',
             'condition' => 'required|string|max:100',
@@ -110,6 +110,36 @@ class ProductController extends Controller
         return redirect()->route('dashboard')->with('success', 'Producto creado con éxito.');
     }
     
+    public function update(Request $request, Product $product)
+{
+    if ($product->user_id !== $request->user()->id) {
+        abort(403, 'No autorizado');
+    }
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+        'category' => 'required|string|max:100',
+        'condition' => 'required|string|max:100',
+        'faculty' => 'required|string|max:100',
+    ]);
+
+    $product->update($validated);
+
+    return redirect()->route('misProductos.index')->with('success', 'Producto actualizado con éxito.');
+}
+
+    public function edit(Product $product)
+{
+    if ($product->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    return Inertia::render('modificarProduct', [
+        'product' => $product,
+    ]);
+}
 
 
     public function destroy(Product $product)
