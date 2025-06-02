@@ -4,55 +4,54 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ShoppingCart,Folder, Home, MessageCircle, ShoppingBag, Heart, Store } from 'lucide-react';
+import { Folder, Home, MessageCircle,Heart, Store, User } from 'lucide-react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Inicio',
-        href: '/dashboard',
-        icon: Home,
-    },
-
-    {
-        title: 'Mis compras',
-        href: '/dashboard',
-        icon: ShoppingBag,
-    },
-    {
-        title: 'Favoritos',
-        href: '/dashboard',
-        icon: Heart,
-    },
-
-    {
-        title: 'Mensajes',
-        href: route('conversations.index'),
-        icon: MessageCircle,
-    },
-    {
-        title: 'Mis Ventas',
-        href: route('misProductos.index'),
-        icon: Store,
-    },
-    {
-        title: 'Carrito',
-        href: '/dashboard',
-        icon: ShoppingCart,
-    },
-
-
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Campus Virtual',
-        href: 'https://campusvirtual.univalle.edu.co/moodle/login/index.php',
-        icon: Folder,
-    }
-];
+import { usePage } from '@inertiajs/react';
+import { PageProps } from '@/types/inertia';
 
 export function AppSidebar() {
+    const { props } = usePage<PageProps>();
+    const user = props.auth.user;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Inicio',
+            href: '/dashboard',
+            icon: Home,
+        },
+        {
+            title: 'Favoritos',
+            href: route('favorites.index'),
+            icon: Heart,
+        },
+        {
+            title: 'Mensajes',
+            href: route('conversations.index'),
+            icon: MessageCircle,
+        },
+        {
+            title: 'Mis Ventas',
+            href: route('misProductos.index'),
+            icon: Store,
+        },
+        // Mostrar solo si el usuario es admin
+        ...(user?.role === 'admin'
+            ? [{
+                  title: 'Administración',
+                  href: route('admin.products.index'),
+                  icon: User,
+              }]
+            : [])
+    ];
+
+    const footerNavItems: NavItem[] = [
+        {
+            title: 'Campus Virtual',
+            href: 'https://campusvirtual.univalle.edu.co/moodle/login/index.php',
+            icon: Folder,
+        }
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

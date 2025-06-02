@@ -9,14 +9,21 @@ use Inertia\Inertia;
 
 class ConversationController extends Controller
 {
-    public function index()
+   public function index()
     {
         $user = auth()->user();
 
-        $conversations = Conversation::with(['user1', 'user2']) // Asegúrate de cargar relaciones para mostrar nombres
-            ->where('user1_id', $user->id)
-            ->orWhere('user2_id', $user->id)
-            ->get();
+        $conversations = Conversation::with([
+            'user1',
+            'user2',
+            'product',
+            'messages' => function ($query) {
+                $query->latest()->limit(1); // 🔥 Solo el último mensaje
+            }
+        ])
+        ->where('user1_id', $user->id)
+        ->orWhere('user2_id', $user->id)
+        ->get();
 
         return Inertia::render('conversation/Index', [
             'conversations' => $conversations,
@@ -46,29 +53,37 @@ class ConversationController extends Controller
     }
 
     public function start(Product $product)
-    {
-        $authUser = auth()->user();
-        $productOwner = $product->user;
+{
+    $authUser = auth()->user();
+    $productOwner = $product->user;
 
-        if ($authUser->id === $productOwner->id) {
-            return redirect()->back()->with('error', 'No puedes iniciar una conversación contigo mismo.');
-        }
-
-        $conversation = Conversation::where(function ($query) use ($authUser, $productOwner) {
-            $query->where('user1_id', $authUser->id)
-                  ->where('user2_id', $productOwner->id);
-        })->orWhere(function ($query) use ($authUser, $productOwner) {
-            $query->where('user1_id', $productOwner->id)
-                  ->where('user2_id', $authUser->id);
-        })->first();
-
-        if (!$conversation) {
-            $conversation = Conversation::create([
-                'user1_id' => $authUser->id,
-                'user2_id' => $productOwner->id,
-            ]);
-        }
-
-        return redirect()->route('conversations.show', $conversation->id);
+    if ($authUser->id === $productOwner->id) {
+        return redirect()->back()->with('error', 'No puedes iniciar una conversación contigo mismo.');
     }
+
+    // Buscar una conversación específica para este producto entre estos dos usuarios
+    $conversation = Conversation::where('product_id', $product->id)
+        ->where(function ($query) use ($authUser, $productOwner) {
+            $query->where(function ($q) use ($authUser, $productOwner) {
+                $q->where('user1_id', $authUser->id)
+                  ->where('user2_id', $productOwner->id);
+            })->orWhere(function ($q) use ($authUser, $productOwner) {
+                $q->where('user1_id', $productOwner->id)
+                  ->where('user2_id', $authUser->id);
+            });
+        })
+        ->first();
+
+    // Si no existe, la creamos
+    if (!$conversation) {
+        $conversation = Conversation::create([
+            'user1_id' => $authUser->id,
+            'user2_id' => $productOwner->id,
+            'product_id' => $product->id, // ✅ Asociamos el producto
+        ]);
+    }
+
+    return redirect()->route('conversations.show', $conversation->id);
+}
+
 }

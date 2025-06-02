@@ -1,37 +1,36 @@
+// ProductGridAdmin.tsx
 import { Product } from "@/types/product";
-import ProductCard from "./ProductCard";
+import AdminProductCard from "./AdminProductCard";
 
-interface ProductGridProps {
+interface ProductGridAdminProps {
   products: Product[];
-  userId: number;
   loadingId: number | null;
   setLoadingId: (id: number | null) => void;
   showLoadMore: boolean;
   onLoadMore: () => void;
-  onToggleFavorite: (productId: number, favorited: boolean) => void;
+  onDelete: (id: number) => void;
+  showDeleteButton?: boolean;
+  userId?: number;
 }
 
-export default function ProductGrid({
-  products = [],
-  userId,
+export default function ProductGridAdmin({
+  products,
   loadingId,
   setLoadingId,
   showLoadMore,
   onLoadMore,
-  onToggleFavorite,
-}: ProductGridProps) {
+  onDelete,
+}: ProductGridAdminProps) {
   return (
     <>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {products.map(product => (
-          <ProductCard
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {products.map((product) => (
+          <AdminProductCard
             key={product.id}
             product={product}
-            currentUserId={userId}
             loadingId={loadingId}
             setLoadingId={setLoadingId}
-            isFavorited={product.isFavorited}
-            onToggleFavorite={onToggleFavorite}
+            onDelete={onDelete}
           />
         ))}
       </div>

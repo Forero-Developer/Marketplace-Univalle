@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Inertia\Inertia;
@@ -32,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/mis-productos', [ProductController::class, 'misProductos'])->name('misProductos.index');
 
+    // Vista para editar producto
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     // Rutas del chat
     Route::get('/chat/start/{userId}', [ChatController::class, 'getOrCreateConversation'])->name('chat.start');
     Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
@@ -47,7 +52,17 @@ Route::middleware(['auth'])->group(function () {
 
     
     Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
+     // Rutas para favoritos
+    Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
 
+});
+
+Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(function () {
+    Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products.index');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 });
 
 Route::get('/verify-email', function () {

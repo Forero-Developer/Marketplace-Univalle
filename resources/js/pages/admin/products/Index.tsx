@@ -5,7 +5,7 @@ import TextLink from '@/components/text-link';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FiltersBar from '@/components/marketplace/FiltersBar';
-import ProductGrid from '@/components/marketplace/ProductGrid';
+import ProductGridAdmin from '@/components/marketplace/ProductGridAdmin';
 
 interface Product {
   id: number;
@@ -21,7 +21,7 @@ interface Product {
     id: number;
     name: string;
   };
-  isFavorited?: boolean; // <-- asegúrate que el backend envíe esto
+  isFavorited?: boolean;
 }
 
 interface Props {
@@ -30,7 +30,6 @@ interface Props {
     current_page: number;
     last_page: number;
   };
-  userId: number;
   filters: {
     search: string;
     category: string;
@@ -45,11 +44,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     title: 'Inicio',
     href: '/dashboard',
   },
+  {
+    title: 'Administrar productos',
+    href: '/admin/products',
+  },
 ];
 
-export default function Dashboard({
+export default function AdminProducts({
   products,
-  userId,
   filters,
   allCategories,
   allFaculties,
@@ -59,13 +61,13 @@ export default function Dashboard({
   const [faculty, setFaculty] = useState(filters.faculty || '');
   const [allProducts, setAllProducts] = useState(products.data || []);
   const [page, setPage] = useState(products.current_page);
-  const [loadingId, setLoadingId] = useState<number | null>(null);
   const [lastPage, setLastPage] = useState(products.last_page);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
-  // Actualiza los filtros en la URL y en el backend
+  // Actualiza los filtros en la URL y backend para admin
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      router.get(route('dashboard'), {
+      router.get(route('admin.products.index'), {
         search,
         category,
         faculty,
@@ -78,45 +80,54 @@ export default function Dashboard({
     return () => clearTimeout(delayDebounce);
   }, [search, category, faculty]);
 
-  // Actualiza productos si cambian desde backend (por ejemplo, filtros)
+  // Actualiza productos si cambian desde backend
   useEffect(() => {
     setAllProducts(products.data);
     setPage(products.current_page);
     setLastPage(products.last_page);
   }, [products]);
 
-  // Función para manejar el toggle favorito y actualizar el estado local
-  function handleToggleFavorite(productId: number, favorited: boolean) {
-    setAllProducts(prevProducts =>
-      prevProducts.map(product =>
-        product.id === productId
-          ? { ...product, isFavorited: favorited }
-          : product
-      )
-    );
-  }
-
   // Cargar más productos para paginación
   const loadMoreProducts = async () => {
-    const nextPage = page + 1;
-    const params = new URLSearchParams({
-      page: String(nextPage),
-      search,
-      category,
-      faculty,
-    });
+  if (page >= lastPage) return;
 
-    const response = await fetch(`/api/products/load-more?${params.toString()}`);
+  const nextPage = page + 1;
+
+  try {
+    const response = await fetch(`/admin/products?page=${nextPage}&search=${search}&category=${category}&faculty=${faculty}`);
     const data = await response.json();
 
     setAllProducts(prev => [...prev, ...data.data]);
     setPage(data.current_page);
     setLastPage(data.last_page);
+  } catch (error) {
+    console.error('Error cargando más productos:', error);
+  }
+};
+
+  // Función para eliminar producto (solo admin)
+  const handleDelete = async (productId: number) => {
+    if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
+
+    setLoadingId(productId);
+
+    try {
+      await fetch(route('admin.products.destroy', productId), {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '' },
+      });
+
+      setAllProducts(prev => prev.filter(product => product.id !== productId));
+    } catch (error) {
+      alert('Error eliminando el producto');
+    } finally {
+      setLoadingId(null);
+    }
   };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Dashboard" />
+      <Head title="Administrar productos" />
 
       <div className="p-6 relative">
         <TextLink
@@ -127,10 +138,8 @@ export default function Dashboard({
           Vender
         </TextLink>
 
-        <h1 className="text-2xl font-bold text-black-600 mb-1">Marketplace Univalle</h1>
-        <p className="text-gray-500 mb-4">
-          Compra y vende productos <br />dentro de la comunidad <br />universitaria.
-        </p>
+        <h1 className="text-2xl font-bold text-black-600 mb-1">Administrar productos</h1>
+        <p className="text-gray-500 mb-4">Lista completa de productos en la plataforma</p>
 
         <FiltersBar
           search={search}
@@ -146,17 +155,27 @@ export default function Dashboard({
         {allProducts.length === 0 ? (
           <p className="text-gray-500">No se encontraron productos.</p>
         ) : (
-          <ProductGrid
-            products={allProducts || []} // importante
-            userId={userId}
+          <ProductGridAdmin
+            products={allProducts}
+            userId={0} // admin ve todos, no es necesario filtrar por userId
             loadingId={loadingId}
             setLoadingId={setLoadingId}
             showLoadMore={page < lastPage}
             onLoadMore={loadMoreProducts}
-            onToggleFavorite={handleToggleFavorite}
+            onDelete={handleDelete} // necesitarás agregar esta prop en ProductGrid
+            showDeleteButton //
           />
         )}
       </div>
+
+      {page < lastPage && (
+        <button
+            onClick={loadMoreProducts}
+            className="mt-4 bg-red-600 text-white px-4 py-2 rounded"
+        >
+            Cargar más productos
+        </button>
+        )}
     </AppLayout>
   );
 }
