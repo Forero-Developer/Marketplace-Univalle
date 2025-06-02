@@ -198,8 +198,22 @@ export default function ProductCard({
         </div>
       </div>
 
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)} className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-        <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md space-y-4">
+      {/* Diálogo con overlay y animaciones */}
+      <Dialog
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        className="fixed inset-0 z-50 flex items-center justify-center"
+      >
+        <div
+          className="fixed inset-0 bg-black/80
+            data-[state=open]:animate-in
+            data-[state=closed]:animate-out
+            data-[state=closed]:fade-out-0
+            data-[state=open]:fade-in-0"
+          aria-hidden="true"
+        />
+
+        <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md space-y-4 z-10">
           <Dialog.Title className="text-lg font-semibold text-red-600">¿Eliminar producto?</Dialog.Title>
           <Dialog.Description className="text-gray-600">
             Esta acción eliminará el producto permanentemente. ¿Deseas continuar?

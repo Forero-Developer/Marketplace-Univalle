@@ -60,6 +60,49 @@ class ProductController extends Controller
     ]);
 }
 
+public function adminIndex(Request $request)
+{
+    $search = $request->query('search', '');
+    $category = $request->query('category', '');
+    $faculty = $request->query('faculty', '');
+
+    $query = Product::with('user');
+
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('category', 'like', "%$search%")
+              ->orWhere('faculty', 'like', "%$search%");
+        });
+    }
+
+    if ($category) {
+        $query->where('category', $category);
+    }
+
+    if ($faculty) {
+        $query->where('faculty', $faculty);
+    }
+
+    $products = $query->paginate(15);
+
+    if ($request->wantsJson()) {
+        return response()->json($products);
+    }
+
+    return Inertia::render('admin/products/Index', [
+        'products' => $products,
+        'filters' => [
+            'search' => $search,
+            'category' => $category,
+            'faculty' => $faculty,
+        ],
+        'allCategories' => Product::select('category')->distinct()->pluck('category'),
+        'allFaculties' => Product::select('faculty')->distinct()->pluck('faculty'),
+    ]);
+}
+
+
 
  public function misProductos(Request $request)
     {
@@ -111,24 +154,31 @@ class ProductController extends Controller
     }
     
     public function update(Request $request, Product $product)
-{
-    if ($product->user_id !== $request->user()->id) {
-        abort(403, 'No autorizado');
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'admin' && $product->user_id !== $user->id) {
+            abort(403, 'No autorizado');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'category' => 'required|string|max:100',
+            'condition' => 'required|string|max:100',
+            'faculty' => 'required|string|max:100',
+        ]);
+
+        $product->update($validated);
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.products.index')->with('success', 'Producto actualizado con éxito.');
+        } else {
+            return redirect()->route('misProductos.index')->with('success', 'Producto actualizado con éxito.');
+        }
     }
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-        'category' => 'required|string|max:100',
-        'condition' => 'required|string|max:100',
-        'faculty' => 'required|string|max:100',
-    ]);
-
-    $product->update($validated);
-
-    return redirect()->route('misProductos.index')->with('success', 'Producto actualizado con éxito.');
-}
 
     public function edit(Product $product)
 {
@@ -142,15 +192,21 @@ class ProductController extends Controller
 }
 
 
-    public function destroy(Product $product)
-    {
-    if ($product->user_id !== request()->user()->id) {
+    public function destroy(Product $product, Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role !== 'admin' && $product->user_id !== $user->id) {
         abort(403, 'No autorizado');
     }
-    
+
     $product->delete();
-    
-    return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.products.index')->with('success', 'Producto eliminado con éxito.');
+    } else {
+        return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
+    }
 }
 
 public function loadMore(Request $request)
