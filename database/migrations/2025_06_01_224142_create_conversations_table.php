@@ -11,10 +11,11 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user1_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('user2_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->timestamps();
 
-            // Evitar conversaciones duplicadas entre los mismos usuarios
-            $table->unique(['user1_id', 'user2_id']);
+            // Evitar conversaciones duplicadas para el mismo producto entre los mismos usuarios
+            $table->unique(['user1_id', 'user2_id', 'product_id']);
         });
     }
 

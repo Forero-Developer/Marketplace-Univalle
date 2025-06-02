@@ -95,14 +95,14 @@ export default function ProductCard({
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[250px] sm:min-w-0 h-full flex flex-col">
         <div className="relative">
           {product.images.length > 0 && (
             <>
               <img
                 src={`/storage/${product.images[currentImageIndex]}`}
                 alt={`${product.name} - imagen ${currentImageIndex + 1}`}
-                className="w-full h-64 sm:h-80 object-cover transition-all duration-300 ease-in-out"
+                className="w-full aspect-[4/3] object-cover transition-all duration-300 ease-in-out"
               />
               {product.images.length > 1 && (
                 <>
@@ -126,21 +126,23 @@ export default function ProductCard({
           )}
         </div>
 
-        <div className="p-4">
-          <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-tight">
-            {product.name}
-          </h2>
-          <div className="flex items-center text-sm text-gray-600 mb-2">
-            <span className="uppercase">{product.faculty}</span>
-            <span className="mx-1">•</span>
-            <span className="uppercase">{product.condition}</span>
+        <div className="p-4 flex flex-col flex-1 justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 uppercase tracking-tight">
+              {product.name}
+            </h2>
+            <div className="flex items-center text-sm text-gray-600 mb-2">
+              <span className="uppercase">{product.faculty}</span>
+              <span className="mx-1">•</span>
+              <span className="uppercase">{product.condition}</span>
+            </div>
+            <p className="uppercase text-sm text-gray-600 mb-2">
+              <span className="font-semibold">Vendedor:</span> {product.user.name}
+            </p>
+            <p className="text-2xl font-bold text-red-600 mb-4">
+              ${new Intl.NumberFormat('es-ES').format(product.price)}
+            </p>
           </div>
-          <p className="uppercase text-sm text-gray-600 mb-2">
-            <span className="font-semibold">Vendedor:</span> {product.user.name}
-          </p>
-          <p className="text-2xl font-bold text-red-600 mb-4">
-            ${new Intl.NumberFormat('es-ES').format(product.price)}
-          </p>
 
           <div className="flex gap-2 mt-4">
             {product.user_id !== currentUserId && (

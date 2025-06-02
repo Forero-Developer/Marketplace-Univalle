@@ -5,6 +5,15 @@ import { PageProps } from '@/types/inertia'; // Ajusta la ruta según tu proyect
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 
+interface Product {
+  id: number;
+  name: string;
+}
+interface Message {
+  id: number;
+  message: string;
+  created_at: string;
+}
 
 interface Conversation {
   id: number;
@@ -12,6 +21,8 @@ interface Conversation {
   user2_id: number;
   user1: PageProps['auth']['user'];
   user2: PageProps['auth']['user'];
+  product: Product;
+  messages: Message[]; // <- Aquí añadimos los mensajes
 }
 
 interface Props {
@@ -61,27 +72,38 @@ export default function Index({ conversations }: Props) {
               conversation.user1_id !== user.id
                 ? conversation.user1
                 : conversation.user2;
-                
+
+            const lastMessage = conversation.messages[0]?.message ?? 'Sin mensajes aún';
+
             return (
               <li key={conversation.id}>
                 <Link
                   href={route('conversations.show', conversation.id)}
                   className="block px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl hover:bg-red-50 transition-all"
-                  >
-                  <span className="text-gray-800 font-medium">
-                    Conversación con{' '}
+                >
+                  <span className="text-gray-800 font-medium uppercase">
+                    Producto: {' '}
                     <span className="text-red-600 font-semibold">
-                      {otherUser.name}
+                      {conversation.product.name}
                     </span>
+                  </span>
+                  <br />
+                  <span className="text-sm text-gray-600 italic">
+                    Sobre el vendedor: <span className="text-gray-800">{otherUser.name}</span>
+                  </span>
+                  <br />
+                  <span className="text-sm text-gray-500 mt-1 block truncate">
+                    Último mensaje: <span className="text-gray-700">{lastMessage}</span>
                   </span>
                 </Link>
               </li>
             );
-        })}
+          })}
+
         </ul>
       )}
     </div>
-                </AppLayout>
+    </AppLayout>
   );
   
 }
