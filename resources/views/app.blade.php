@@ -36,11 +36,11 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/svg+xml" href="{{ asset('logo-univalle.svg') }}">    
-        <meta name="vite-injected-favicon" content="no">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('logo-univalle.svg') }}">
+{{--        <meta name="vite-injected-favicon" content="no">--}}
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
+        @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

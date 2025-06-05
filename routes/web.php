@@ -6,6 +6,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Inertia\Inertia;
@@ -50,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/conversations/start/{product}', [ConversationController::class, 'start'])->name('conversations.start');
 
-    
+
     Route::get('/api/products/load-more', [ProductController::class, 'loadMore']);
      // Rutas para favoritos
     Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
@@ -80,6 +81,14 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
+Route::get('/linkstorage', function () {
+    try {
+        Artisan::call('storage:link');
+        return 'El enlace simbólico ha sido creado exitosamente.';
+    } catch (\Exception $e) {
+        return 'Error al crear el enlace simbólico: ' . $e->getMessage();
+    }
+})->middleware(['auth']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
