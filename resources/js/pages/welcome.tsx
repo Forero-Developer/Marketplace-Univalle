@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
-import AppLogoIcon from '@/components/app-logo-icon';
+// import AppLogoIcon from '@/components/app-logo-icon';
 import { motion } from 'framer-motion';
 
 export default function Welcome() {
@@ -41,13 +41,13 @@ export default function Welcome() {
                   href={route('login')}
                   className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
                 >
-                  Log in
+                  Acceso
                 </Link>
                 <Link
                   href={route('register')}
                   className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
                 >
-                  Register
+                  Registro
                 </Link>
               </>
             )}
@@ -92,7 +92,9 @@ export default function Welcome() {
                   Conoce Más
                 </Button>
               </div>
-              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" />
+              <div className="flex items-center justify-center mt-8">
+              <img src="https://campusvirtual.univalle.edu.co/moodle/theme/image.php/mooveuv/theme_mooveuv/1746188544/logouv" width="96" height="96" alt="Descripción" />
+              </div>
             </div>
           </motion.section>
 
@@ -158,8 +160,9 @@ export default function Welcome() {
             className="w-full flex items-center justify-center py-12 md:py-24 lg:py-32 bg-red-50"
           >
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" 
-              />
+              <div className="flex items-center justify-center mt-8">
+              <img src="https://campusvirtual.univalle.edu.co/moodle/theme/image.php/mooveuv/theme_mooveuv/1746188544/logouv" width="96" height="96" alt="Descripción" />
+              </div>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold text-red-700 sm:text-4xl">Acerca de MarketplaceUnivalle</h2>
                 <p className="text-gray-600 md:text-xl">

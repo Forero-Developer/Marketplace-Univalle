@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -84,7 +85,7 @@ public function adminIndex(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(15);
+    $products = $query->paginate(8);
 
     if ($request->wantsJson()) {
         return response()->json($products);
@@ -99,6 +100,16 @@ public function adminIndex(Request $request)
         ],
         'allCategories' => Product::select('category')->distinct()->pluck('category'),
         'allFaculties' => Product::select('faculty')->distinct()->pluck('faculty'),
+    ]);
+}
+
+public function show(Product $product)
+{
+    // Cargar relaciones si es necesario, por ejemplo 'user'
+    $product->load('user');
+
+    return Inertia::render('infoProducts', [
+        'product' => $product,
     ]);
 }
 
@@ -150,7 +161,17 @@ public function adminIndex(Request $request)
             'user_id' => request()->user()->id, // Relaciona el producto al usuario autenticado
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Producto creado con éxito.');
+        // Generar QR con URL del producto (ajusta la ruta según tu app)
+        $qrPath = 'qrcodes/product_'.$product->id.'.svg';
+        QrCode::format('svg')
+              ->size(300)
+              ->generate(route('infoProducts', $product->id), storage_path('app/public/' . $qrPath));
+
+        // Guardar la ruta del QR en el producto
+        $product->qr_code = $qrPath;
+        $product->save();
+
+        return redirect()->route('misProductos.index')->with('success', 'Producto creado con éxito.');
     }
     
     public function update(Request $request, Product $product)
@@ -180,9 +201,11 @@ public function adminIndex(Request $request)
     }
 
 
-    public function edit(Product $product)
+public function edit(Product $product)
 {
-    if ($product->user_id !== auth()->id()) {
+    $user = auth()->user();
+
+    if ($product->user_id !== $user->id && $user->role !== 'admin') {
         abort(403);
     }
 
@@ -190,7 +213,6 @@ public function adminIndex(Request $request)
         'product' => $product,
     ]);
 }
-
 
     public function destroy(Product $product, Request $request)
 {

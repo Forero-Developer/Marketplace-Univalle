@@ -14,7 +14,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Profile settings',
+        title: 'Ajustes del Perfil',
         href: '/settings/profile',
     },
 ];
@@ -46,11 +46,11 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Profile information" description="Update your name and email address" />
+                    <HeadingSmall title="Informacion del perfil" description="Actualiza tu nombre" />
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">Nombre</Label>
 
                             <Input
                                 id="name"
@@ -59,24 +59,23 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
-                                placeholder="Full name"
+                                placeholder="Nombre Completo"
                             />
 
                             <InputError className="mt-2" message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">Correo Electronico</Label>
 
                             <Input
                                 id="email"
                                 type="email"
                                 className="mt-1 block w-full"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
-                                required
+                                disabled
                                 autoComplete="username"
-                                placeholder="Email address"
+                                placeholder="correo electronico"
                             />
 
                             <InputError className="mt-2" message={errors.email} />
@@ -85,7 +84,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
                                 <p className="text-muted-foreground -mt-4 text-sm">
-                                    Your email address is unverified.{' '}
+                                    Tu correo electronico no esta verificado.{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
@@ -105,7 +104,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
+                            <Button disabled={processing}>Guardar</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -114,7 +113,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-neutral-600">Guardado</p>
                             </Transition>
                         </div>
                     </form>

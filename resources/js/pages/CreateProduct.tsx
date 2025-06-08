@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -12,35 +12,56 @@ export default function CreateProduct() {
     category: '',
     condition: '',
     faculty: '',
-    images: [] as File[] ,
+    images: [] as File[],
   });
 
   const breadcrumbs: BreadcrumbItem[] = [
-    {
-      title: 'Dashboard',
-      href: '/dashboard',
-    },
-    {
-      title: 'Nuevo producto',
-      href: route('misProductos.index'),
-    },
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Nuevo producto', href: route('misProductos.index') },
   ];
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
+  // Estado local para mostrar el precio formateado con puntos
+  const [displayPrice, setDisplayPrice] = useState('');
+
+  // Sincronizar displayPrice si cambia data.price desde fuera (por ejemplo, reset)
+  useEffect(() => {
+    setDisplayPrice(data.price
+      ? Number(data.price).toLocaleString('es-CO')
+      : ''
+    );
+  }, [data.price]);
+
+  const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // Solo números, quitar todo lo que no sea dígito
+    const rawValue = e.target.value.replace(/\D/g, '');
+
+    // Formatear con separadores de miles
+    const formattedValue = rawValue
+      ? parseInt(rawValue, 10).toLocaleString('es-CO')
+      : '';
+
+    setDisplayPrice(formattedValue);
+
+    // Actualizar el valor numérico en el formulario
+    setData('price', rawValue ? rawValue : '');
+
+  };
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-  
+
       // Validar que solo sean imágenes jpeg, png o jpg
       const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       const invalidFiles = filesArray.filter(file => !validTypes.includes(file.type));
-  
+
       if (invalidFiles.length > 0) {
         alert('Solo puedes subir imágenes en formato JPEG, PNG o JPG.');
-        return; // Detener el proceso si hay archivos inválidos
+        return;
       }
-  
+
       setData('images', filesArray);
       const previews = filesArray.map(file => URL.createObjectURL(file));
       setImagePreviews(previews);
@@ -49,175 +70,180 @@ export default function CreateProduct() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (data.images.length === 0) {
       alert('Debes seleccionar al menos una imagen del producto.');
       return;
     }
 
-//     if (!data.description.trim()) {
-//   alert('La descripción es obligatoria.');
-//   return;
-// }
-  
     post(route('products.store'), {
       preserveScroll: true,
       onSuccess: () => {
         reset();
         setImagePreviews([]);
+        setDisplayPrice('');
       },
     });
   };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen flex items-center justify-center bg-white px-12 py-12"
-    >
-      <div className="relative w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-        <div className="absolute top-4 right-4">
-        </div>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="min-h-screen flex items-center justify-center bg-white px-12 py-12"
+      >
+        <div className="relative w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
+          <h2 className="text-3xl font-bold mb-6 text-red-600 text-center">Publicar producto</h2>
 
-        <h2 className="text-3xl font-bold mb-6 text-red-600 text-center">Publicar producto</h2>
-
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-5">
-          <div>
-            <label htmlFor="name" className="block font-semibold">Nombre del producto</label>
-            <input
-              type="text"
-              name="name"
-              value={data.name}
-              onChange={(e) => setData('name', e.target.value)}
-              className="w-full border p-2 rounded"
-              required
-            />
-            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block font-semibold">
-              Descripción <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={data.description}
-              onChange={(e) => setData('description', e.target.value)}
-              className="w-full border p-2 rounded"
-              required
-            />
-          </div>
-            {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
-
-          <div>
-            <label htmlFor="price" className="block font-semibold">Precio</label>
-            <input
-              type="number"
-              name="price"
-              value={data.price}
-              onChange={(e) => setData('price', e.target.value)}
-              className="w-full border p-2 rounded"
-              required
-            />
-            {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-5">
             <div>
-              <label htmlFor="category" className="block font-semibold">Categoría</label>
-              <select
-                name="category"
-                value={data.category}
-                onChange={(e) => setData('category', e.target.value)}
-                className="w-full border p-2 rounded"
-                required
-              >
-                <option value="">Selecciona una categoría</option>
-                <option value="tecnologia">Tecnología</option>
-                <option value="libros">Libros</option>
-                <option value="ropa">Ropa</option>
-              </select>
-              {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
-            </div>
-
-            <div>
-              <label htmlFor="condition" className="block font-semibold">Estado</label>
-              <select
-                name="estado"
-                value={data.condition}
-                onChange={(e) => setData('condition', e.target.value)}
-                className="w-full border p-2 rounded"
-                required
-              >
-                <option value="">Selecciona el estado</option>
-                <option value="nuevo">Nuevo</option>
-                <option value="usado">Usado</option>
-              </select>
-              {errors.condition && <span className="text-red-500 text-sm">{errors.condition}</span>}
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="faculty" className="block font-semibold">Facultad</label>
-            <select
-              name="facultad"
-              value={data.faculty}
-              onChange={(e) => setData('faculty', e.target.value)}
-              className="w-full border p-2 rounded"
-              required
-            >
-              <option value="">Selecciona una facultad</option>
-              <option value="ingenieria">Ingeniería</option>
-              <option value="derecho">Derecho</option>
-              <option value="medicina">Medicina</option>
-            </select>
-            {errors.faculty && <span className="text-red-500 text-sm">{errors.faculty}</span>}
-          </div>
-
-          <div>
-            <label htmlFor="images" className="block font-semibold">Imágenes</label>
-            <div className="border border-dashed border-gray-400 p-4 rounded-lg bg-gray-50">
+              <label htmlFor="name" className="block font-semibold">Nombre del producto</label>
               <input
-                type="file"
-                name="images"
-                id="images"
-                multiple
-                onChange={handleImageChange}
-                className="w-full cursor-pointer"
+                type="text"
+                name="name"
+                value={data.name}
+                onChange={e => setData('name', e.target.value)}
+                className="input w-full border border-gray-300 rounded-lg px-4 py-2"
+                required
               />
-              <p className="text-sm text-gray-500 mt-2">Puedes subir varias imágenes del producto</p>
-
-              {imagePreviews.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mt-4">
-                  {imagePreviews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      alt={`preview-${index}`}
-                      className="h-24 w-full object-cover rounded shadow"
-                    />
-                  ))}
-                </div>
-              )}
+              {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
             </div>
-            {errors.images && <span className="text-red-500 text-sm">{errors.images}</span>}
-          </div>
 
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            type="submit"
-            disabled={processing}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg w-full transition"
-          >
-            Publicar
-          </motion.button>
-        </form>
-      </div>
-    </motion.div>
+            <div>
+              <label htmlFor="description" className="block font-semibold">
+                Descripción <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={data.description}
+                onChange={e => setData('description', e.target.value)}
+                className="input w-full border border-gray-300 rounded-lg px-4 py-2"
+                required
+              />
+              {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
+            </div>
+
+            <div>
+              <label htmlFor="price" className="block font-semibold">Precio</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 select-none">$</span>
+                <input
+                  type="text"
+                  name="price"
+                  value={displayPrice}
+                  onChange={handlePriceChange}
+                  className="input w-full border border-gray-300 rounded-lg px-7 py-2"
+                  inputMode="numeric"
+                  pattern="[0-9.]*"
+                  aria-label="Precio en pesos colombianos"
+                  required
+                />
+              </div>
+              {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="category" className="block font-semibold">Categoría</label>
+                <select
+                  name="category"
+                  value={data.category}
+                  onChange={e => setData('category', e.target.value)}
+                  className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                  required
+                >
+                  <option value="">Selecciona una categoría</option>
+                  <option value="Electronicos">Electrónicos</option>
+                  <option value="Libros">Libros</option>
+                  <option value="Comida">Comida</option>
+                  <option value="Otros">Otros</option>
+                </select>
+                {errors.category && <span className="text-red-500 text-sm">{errors.category}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="condition" className="block font-semibold">Estado</label>
+                <select
+                  name="condition"
+                  value={data.condition}
+                  onChange={e => setData('condition', e.target.value)}
+                  className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                  required
+                >
+                  <option value="">Selecciona el estado</option>
+                  <option value="Nuevo">Nuevo</option>
+                  <option value="Como nuevo">Como nuevo</option>
+                  <option value="Usado">Usado</option>
+                  
+                </select>
+                {errors.condition && <span className="text-red-500 text-sm">{errors.condition}</span>}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="faculty" className="block font-semibold">Facultad</label>
+              <select
+                name="faculty"
+                value={data.faculty}
+                onChange={e => setData('faculty', e.target.value)}
+                className="input w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer"
+                required
+              >
+                <option value="">Selecciona la facultad</option>
+                <option value="Ingeniería">Ingeniería</option>
+                <option value="Medicina">Medicina</option>
+                <option value="Derecho">Derecho</option>
+                <option value="Ciencias Sociales">Ciencias Sociales</option>
+                <option value="Artes">Artes</option>
+                <option value="Otra">Otra</option>
+              </select>
+              {errors.faculty && <span className="text-red-500 text-sm">{errors.faculty}</span>}
+            </div>
+
+            <div>
+              <label htmlFor="images" className="block font-semibold">Imágenes</label>
+              <div className="border border-dashed border-gray-400 p-4 rounded-lg bg-gray-50">
+                <input
+                  type="file"
+                  name="images"
+                  id="images"
+                  multiple
+                  onChange={handleImageChange}
+                  className="w-full cursor-pointer"
+                />
+                <p className="text-sm text-gray-500 mt-2">Puedes subir varias imágenes del producto</p>
+
+                {imagePreviews.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-4">
+                    {imagePreviews.map((src, index) => (
+                      <img
+                        key={index}
+                        src={src}
+                        alt={`preview-${index}`}
+                        className="h-24 w-full object-cover rounded shadow"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              {errors.images && <span className="text-red-500 text-sm">{errors.images}</span>}
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              type="submit"
+              disabled={processing}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg w-full transition"
+            >
+              Publicar
+            </motion.button>
+          </form>
+        </div>
+      </motion.div>
     </AppLayout>
   );
 }

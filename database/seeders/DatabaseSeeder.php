@@ -11,13 +11,13 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // User::factory(10)->create();
+    public function run()
+{
+    // Crear 10 usuarios (puedes crear algunos admins así: User::factory()->admin()->count(2)->create();)
+    \App\Models\User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+    // Crear 50 productos asociados a usuarios existentes o creados
+    \App\Models\Product::factory(40)->create();
+}
+
 }
