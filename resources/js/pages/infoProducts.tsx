@@ -1,5 +1,5 @@
 import { useState } from "react"
-import QrCodeActualUrl from "@/components/marketplace/codigoQr"
+import QrCodeActualUrl from "@/components/marketplace/CodigoQr"
 import {
 
   Calendar,
