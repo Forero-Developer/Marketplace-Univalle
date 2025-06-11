@@ -1,4 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -8,11 +9,23 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
-import AppLogoIcon from '@/components/app-logo-icon';
+// import AppLogoIcon from '@/components/app-logo-icon';
 import { motion } from 'framer-motion';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function Welcome() {
   const { auth } = usePage<SharedData>().props;
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    // Corregido: Usar "scroll" en lugar de "scrolled"
+    window.addEventListener("scrolled", handleScroll)
+    return () => window.removeEventListener("scrolled", handleScroll)
+  }, [])
 
   return (
     <>
@@ -26,7 +39,19 @@ export default function Welcome() {
 
       <div className="flex min-h-screen flex-col bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
         {/* Header */}
-        <header className="w-full mx-auto px-6 py-4 flex justify-end text-sm bg-red-600">
+        <header className="fixed top-0 z-50 transition-all duration-300 w-full mx-auto px-6 py-4 flex justify-end text-sm bg-red-600">
+          <div className="container mx-auto px-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={`p-2 rounded-xl ${scrolled ? "bg-gradient-to-r from-red-600 to-rose-500" : "bg-white/15 backdrop-blur-sm"}`}
+              >
+                <AppLogoIcon className={`w-6 h-6 ${scrolled ? "text-white" : "text-red-600"}`} />
+              </div>
+              <span className={`text-xl font-bold ${scrolled ? "text-red-600" : "text-white"}`}>
+                MarketplaceUnivalle
+              </span>
+            </div>
+            </div>
           <nav className="flex items-center gap-4">
             {auth.user ? (
               <Link
@@ -41,13 +66,13 @@ export default function Welcome() {
                   href={route('login')}
                   className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
                 >
-                  Log in
+                  Acceso
                 </Link>
                 <Link
                   href={route('register')}
                   className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
                 >
-                  Register
+                  Registro
                 </Link>
               </>
             )}
@@ -92,7 +117,9 @@ export default function Welcome() {
                   Conoce Más
                 </Button>
               </div>
-              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" />
+              <div className="flex items-center justify-center mt-8">
+              <img src="https://campusvirtual.univalle.edu.co/moodle/theme/image.php/mooveuv/theme_mooveuv/1746188544/logouv" width="96" height="96" alt="Descripción" />
+              </div>
             </div>
           </motion.section>
 
@@ -158,8 +185,9 @@ export default function Welcome() {
             className="w-full flex items-center justify-center py-12 md:py-24 lg:py-32 bg-red-50"
           >
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-              <AppLogoIcon className="mx-auto h-24 w-24 mt-12" 
-              />
+              <div className="flex items-center justify-center mt-8">
+              <img src="https://campusvirtual.univalle.edu.co/moodle/theme/image.php/mooveuv/theme_mooveuv/1746188544/logouv" width="96" height="96" alt="Descripción" />
+              </div>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold text-red-700 sm:text-4xl">Acerca de MarketplaceUnivalle</h2>
                 <p className="text-gray-600 md:text-xl">

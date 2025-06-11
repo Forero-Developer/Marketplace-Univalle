@@ -17,17 +17,18 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('/info_products/{product}', [ProductController::class, 'show'])->name('infoProducts');
+
 // Rutas protegidas para usuarios autenticados y verificados
-//Route::middleware(['auth', 'verified'])->group(function () {
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard con lista de productos
     Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
-
+    
     // Vista para crear producto (formulario)
     Route::get('/products/create', function () {
         return Inertia::render('CreateProduct'); // Asegúrate que CreateProduct.jsx existe
     })->name('products.create');
-
+    
     // Guardar producto en la base de datos
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 

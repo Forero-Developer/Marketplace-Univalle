@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -39,7 +40,7 @@ class ProductController extends Controller
 
     $favoriteProductIds = $request->user()->favorites()->pluck('product_id')->toArray();
 
-    $products = $query->paginate(8)->through(function ($product) use ($favoriteProductIds) {
+    $products = $query->paginate(9)->through(function ($product) use ($favoriteProductIds) {
         $product->isFavorited = in_array($product->id, $favoriteProductIds);
         return $product;
     });
@@ -84,7 +85,7 @@ public function adminIndex(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(15);
+    $products = $query->paginate(9);
 
     if ($request->wantsJson()) {
         return response()->json($products);
@@ -99,6 +100,16 @@ public function adminIndex(Request $request)
         ],
         'allCategories' => Product::select('category')->distinct()->pluck('category'),
         'allFaculties' => Product::select('faculty')->distinct()->pluck('faculty'),
+    ]);
+}
+
+public function show(Product $product)
+{
+    // Cargar relaciones si es necesario, por ejemplo 'user'
+    $product->load('user');
+
+    return Inertia::render('infoProducts', [
+        'product' => $product,
     ]);
 }
 
@@ -150,7 +161,9 @@ public function adminIndex(Request $request)
             'user_id' => request()->user()->id, // Relaciona el producto al usuario autenticado
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Producto creado con éxito.');
+
+
+        return redirect()->route('misProductos.index')->with('success', 'Producto creado con éxito.');
     }
     
     public function update(Request $request, Product $product)
@@ -180,9 +193,11 @@ public function adminIndex(Request $request)
     }
 
 
-    public function edit(Product $product)
+public function edit(Product $product)
 {
-    if ($product->user_id !== auth()->id()) {
+    $user = auth()->user();
+
+    if ($product->user_id !== $user->id && $user->role !== 'admin') {
         abort(403);
     }
 
@@ -190,7 +205,6 @@ public function adminIndex(Request $request)
         'product' => $product,
     ]);
 }
-
 
     public function destroy(Product $product, Request $request)
 {
@@ -202,11 +216,9 @@ public function adminIndex(Request $request)
 
     $product->delete();
 
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.products.index')->with('success', 'Producto eliminado con éxito.');
-    } else {
-        return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
-    }
+   
+    return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
+    
 }
 
 public function loadMore(Request $request)
@@ -237,7 +249,7 @@ public function loadMore(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(8, ['*'], 'page', $page);
+    $products = $query->paginate(9, ['*'], 'page', $page);
 
     return response()->json($products);
 }

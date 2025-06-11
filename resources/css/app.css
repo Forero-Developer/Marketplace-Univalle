@@ -59,6 +59,16 @@
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Tailwind: agrega esto en tu archivo CSS */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE y Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
