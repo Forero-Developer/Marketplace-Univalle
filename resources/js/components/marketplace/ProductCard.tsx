@@ -252,19 +252,28 @@ export default function ProductCard({
                   </button>
 
                   <button
-        onClick={handleViewDetails}
-        className="flex items-center justify-center gap-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-xl py-3 px-4 hover:from-gray-800 hover:to-gray-900 hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200"
-      >
-        <Eye className="w-4 h-4" />
-        <span className="text-sm">Ver más</span>
-      </button>
+                    onClick={handleViewDetails}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-xl py-3 px-4 hover:from-gray-800 hover:to-gray-900 hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm">Ver más</span>
+                  </button>
 
                 </div>
               </>
             ) : (
               <>
                 {/* Owner actions */}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-3">
+
+                  <button
+                    onClick={handleViewDetails}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-xl py-3 px-4 hover:from-gray-800 hover:to-gray-900 hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm">Ver más</span>
+                  </button>
+
                   <button
                     onClick={handleEdit}
                     className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-semibold rounded-xl py-3 px-4 hover:from-blue-100 hover:to-blue-200 hover:shadow-md transition-all duration-200 border border-blue-200"

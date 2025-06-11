@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
+
 Route::get('/info_products/{product}', [ProductController::class, 'show'])->name('infoProducts');
 
 // Rutas protegidas para usuarios autenticados y verificados

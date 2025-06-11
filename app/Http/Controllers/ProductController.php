@@ -40,7 +40,7 @@ class ProductController extends Controller
 
     $favoriteProductIds = $request->user()->favorites()->pluck('product_id')->toArray();
 
-    $products = $query->paginate(8)->through(function ($product) use ($favoriteProductIds) {
+    $products = $query->paginate(9)->through(function ($product) use ($favoriteProductIds) {
         $product->isFavorited = in_array($product->id, $favoriteProductIds);
         return $product;
     });
@@ -85,7 +85,7 @@ public function adminIndex(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(8);
+    $products = $query->paginate(9);
 
     if ($request->wantsJson()) {
         return response()->json($products);
@@ -161,15 +161,7 @@ public function show(Product $product)
             'user_id' => request()->user()->id, // Relaciona el producto al usuario autenticado
         ]);
 
-        // Generar QR con URL del producto (ajusta la ruta según tu app)
-        $qrPath = 'qrcodes/product_'.$product->id.'.svg';
-        QrCode::format('svg')
-              ->size(300)
-              ->generate(route('infoProducts', $product->id), storage_path('app/public/' . $qrPath));
 
-        // Guardar la ruta del QR en el producto
-        $product->qr_code = $qrPath;
-        $product->save();
 
         return redirect()->route('misProductos.index')->with('success', 'Producto creado con éxito.');
     }
@@ -224,11 +216,9 @@ public function edit(Product $product)
 
     $product->delete();
 
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.products.index')->with('success', 'Producto eliminado con éxito.');
-    } else {
-        return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
-    }
+   
+    return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
+    
 }
 
 public function loadMore(Request $request)
@@ -259,7 +249,7 @@ public function loadMore(Request $request)
         $query->where('faculty', $faculty);
     }
 
-    $products = $query->paginate(8, ['*'], 'page', $page);
+    $products = $query->paginate(9, ['*'], 'page', $page);
 
     return response()->json($products);
 }

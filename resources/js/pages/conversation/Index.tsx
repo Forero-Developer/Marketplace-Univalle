@@ -78,8 +78,8 @@ export default function Index({ conversations }: Props) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Mis Conversaciones" />
-
-      <div className="max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <div className="bg-gray-50 min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8 ">
         {/* Header */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6 rounded-2xl shadow-lg mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -185,6 +185,7 @@ export default function Index({ conversations }: Props) {
           )}
         </div>
       </div>
+    </div>
     </AppLayout>
   )
 }

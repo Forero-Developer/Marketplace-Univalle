@@ -1,4 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -10,9 +11,21 @@ import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
 // import AppLogoIcon from '@/components/app-logo-icon';
 import { motion } from 'framer-motion';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function Welcome() {
   const { auth } = usePage<SharedData>().props;
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    // Corregido: Usar "scroll" en lugar de "scrolled"
+    window.addEventListener("scrolled", handleScroll)
+    return () => window.removeEventListener("scrolled", handleScroll)
+  }, [])
 
   return (
     <>
@@ -26,7 +39,19 @@ export default function Welcome() {
 
       <div className="flex min-h-screen flex-col bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
         {/* Header */}
-        <header className="w-full mx-auto px-6 py-4 flex justify-end text-sm bg-red-600">
+        <header className="fixed top-0 z-50 transition-all duration-300 w-full mx-auto px-6 py-4 flex justify-end text-sm bg-red-600">
+          <div className="container mx-auto px-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={`p-2 rounded-xl ${scrolled ? "bg-gradient-to-r from-red-600 to-rose-500" : "bg-white/15 backdrop-blur-sm"}`}
+              >
+                <AppLogoIcon className={`w-6 h-6 ${scrolled ? "text-white" : "text-red-600"}`} />
+              </div>
+              <span className={`text-xl font-bold ${scrolled ? "text-red-600" : "text-white"}`}>
+                MarketplaceUnivalle
+              </span>
+            </div>
+            </div>
           <nav className="flex items-center gap-4">
             {auth.user ? (
               <Link

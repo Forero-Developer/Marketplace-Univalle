@@ -69,32 +69,28 @@ export default function MyProductsPage({ products, userId }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Mis productos" />
 
-      <div className="p-6 sm:pt-9">
+      <div className="p-6 sm:pt-9 bg-gray-50">
 
-        {/* Título y botón alineados horizontalmente */}
-        <div className="flex items-center justify-between flex-wrap gap-y-4 mb-4">
-          <h1 className="text-2xl font-bold text-red-600">Mis productos publicados</h1>
-
-          {/* Botón visible en pantallas grandes */}
-          <TextLink
-            href={route("products.create")}
-            className="hidden sm:inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded no-underline text-sm"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Vender
-          </TextLink>
-        </div>
-
-        <p className="text-gray-500 mb-4">Aquí puedes ver todos los productos que has publicado.</p>
-
-        {/* Botón visible en móviles */}
-        <TextLink
-          href={route("products.create")}
-          className="sm:hidden inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded no-underline text-base mt-2 mb-6"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Vender
-        </TextLink>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6">
+                    <div className="flex-1 min-w-0">
+        
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+                      Mis productos publicados
+                    </h1>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-5">
+                      Lista completa de productos que he publicados en la plataforma
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0">
+                      <TextLink
+                      href={route("products.create")}
+                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
+                      >
+                      <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="text-sm sm:text-base">Vender Producto</span>
+                      </TextLink>
+                    </div>
+                  </div>
 
         {myProducts.length === 0 ? (
           <p className="text-gray-500">No has publicado ningún producto aún.</p>

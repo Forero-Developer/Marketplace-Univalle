@@ -1,4 +1,5 @@
 import { useState } from "react"
+import QrCodeActualUrl from "@/components/marketplace/codigoQr"
 import {
 
   Calendar,
@@ -7,6 +8,7 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react"
 import { router } from "@inertiajs/react"
 
@@ -35,6 +37,9 @@ interface ProductDetailProps {
 export default function InfoProducts({ product }: ProductDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+const handleContact = () => {
+    router.post(route('conversations.start', product.id));
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
@@ -106,9 +111,23 @@ export default function InfoProducts({ product }: ProductDetailProps) {
           <div className="p-6">
             <div className="space-y-4">
               <div>
+                <div className="flex items-center justify-between mb-2">
+                  
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 uppercase tracking-tight">
                   {product.name}
                 </h1>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleContact}
+                    className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 font-semibold rounded-xl py-3 px-4 hover:from-gray-200 hover:to-gray-100 hover:shadow-md transition-all duration-200 border border-gray-200"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-sm">Contactar</span>
+                  </button>
+                  </div>
+                
+                
+                  </div>
                 <div className="flex flex-wrap gap-2 mb-3">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                     {product.faculty}
@@ -151,21 +170,19 @@ export default function InfoProducts({ product }: ProductDetailProps) {
 
         {/* Código QR y detalles adicionales */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Código QR */}
-          {product.qr_code && (
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
               <div className="flex items-center gap-2 mb-4">
                 <QrCode className="h-5 w-5" />
                 <h2 className="text-xl font-semibold">Código QR</h2>
               </div>
               <div className="flex justify-center">
-                <div className="bg-white p-4 rounded-lg border">
-                  <img src={`/storage/${product.qr_code}`} alt="Código QR del producto" className="w-48 h-48" />
+                <div className="bg-white p-2 rounded-lg flex justify-center items-center">
+                    <QrCodeActualUrl product={product}/>
                 </div>
               </div>
               <p className="text-sm text-gray-600 text-center mt-3">Escanea para ver este producto</p>
             </div>
-          )}
+          
 
           {/* Información adicional */}
           <div className="bg-white rounded-lg shadow-md p-6">
