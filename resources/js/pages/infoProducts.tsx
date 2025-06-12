@@ -1,5 +1,4 @@
 import QrCodeActualUrl from '@/components/marketplace/CodigoQr';
-import QrScanner from '@/components/marketplace/QrScanner';
 import { router } from '@inertiajs/react';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, MessageCircle, QrCode, User } from 'lucide-react';
 import { useState } from 'react';
@@ -40,8 +39,6 @@ export default function InfoProducts({ product }: ProductDetailProps) {
             day: 'numeric',
         });
     };
-
-    const [showScanner, setShowScanner] = useState(false);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -164,15 +161,6 @@ export default function InfoProducts({ product }: ProductDetailProps) {
                           <div className="rounded-lg bg-white p-2">
                             <QrCodeActualUrl product={product} />
                           </div>
-
-                          <button
-                            onClick={() => setShowScanner((prev) => !prev)}
-                            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                          >
-                            {showScanner ? 'Cerrar Escáner QR' : 'Escanear QR'}
-                          </button>
-
-                          {showScanner && <QrScanner />}
                         </div>
                         <p className="mt-3 text-center text-sm text-gray-600">Escanea para ver este producto</p>
                     </div>

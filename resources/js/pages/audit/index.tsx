@@ -79,7 +79,7 @@ export default function AuditIndex() {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden pt-16 md:pt-0">
       {/* Elementos decorativos de fondo */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-red-50 rounded-full opacity-30 blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-50 rounded-full opacity-30 blur-3xl"></div>

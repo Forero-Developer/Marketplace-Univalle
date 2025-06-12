@@ -51,7 +51,7 @@ export default function FavoriteProductsPage({ products, userId }: FavoriteProdu
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mis productos" />
 
-            <div className="bg-gray-50 p-6">
+            <div className="bg-gray-50 p-6 pt-23 md:pt-9">
                 <h1 className="mb-2 text-2xl font-bold text-gray-900 sm:mb-5 sm:text-3xl lg:text-4xl">Mis Favoritos</h1>
 
                 {productList.length === 0 ? (

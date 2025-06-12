@@ -131,42 +131,43 @@ export default function AdminProducts({
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Administrar productos" />
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 md:pt-0">
         {/* Container principal con padding responsive */}
         <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
           {/* Botón Vender Producto en esquina superior derecha */}
 
-          {/* Título y descripción */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6">
-            <div className="flex-1 min-w-0">
+<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6">
+  {/* Título y descripción */}
+  <div className="flex-1 min-w-0">
+    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+      Administrar productos
+    </h1>
+    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-5">
+      Lista completa de productos en la plataforma
+    </p>
+  </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-              Administrar productos
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-5">
-              Lista completa de productos en la plataforma
-            </p>
-          </div>
-          <div className="flex-shrink-0">
-              <TextLink
-              href={route("admin.audit.index")}
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
-              >
-              <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-sm sm:text-base">Auditoria</span>
-              </TextLink>
-            </div>
-          <div className="flex-shrink-0">
-              <TextLink
-              href={route("products.create")}
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
-              >
-              <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-sm sm:text-base">Vender Producto</span>
-              </TextLink>
-            </div>
-          </div>
+  {/* Contenedor de botones */}
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:mt-4">
+    <TextLink
+      href={route("admin.audit.index")}
+      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
+    >
+      <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
+      <span className="text-sm sm:text-base">Auditoría</span>
+    </TextLink>
 
+    <TextLink
+      href={route("products.create")}
+      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
+    >
+      <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+      <span className="text-sm sm:text-base">Vender Producto</span>
+    </TextLink>
+  </div>
+</div>
+
+    
           {/* Barra de filtros */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6 max-w-7xl">
             <FiltersBar

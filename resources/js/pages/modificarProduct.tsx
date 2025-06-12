@@ -68,7 +68,7 @@ export default function ModificarProducto({ product }: ModificarProductoProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="flex min-h-screen items-center justify-center bg-white px-4 py-12 sm:px-12"
+                className="flex min-h-screen items-center justify-center bg-white px-4 py-12 sm:px-12 pt-16 md:pt-0"
             >
                 <div className="relative w-full max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 shadow-md">
                     {/* Botón posicionado en esquina superior derecha */}

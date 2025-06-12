@@ -39,48 +39,55 @@ export default function Welcome() {
 
       <div className="flex min-h-screen flex-col bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
         {/* Header */}
-        <header className="fixed top-0 z-50 transition-all duration-300 w-full mx-auto px-6 py-4 flex justify-end text-sm bg-red-600">
-          <div className="container mx-auto px-6 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className={`p-2 rounded-xl ${scrolled ? "bg-gradient-to-r from-red-600 to-rose-500" : "bg-white/15 backdrop-blur-sm"}`}
-              >
-                <AppLogoIcon className={`w-6 h-6 ${scrolled ? "text-white" : "text-red-600"}`} />
-              </div>
-              <span className={`text-xl font-bold ${scrolled ? "text-red-600" : "text-white"}`}>
-                MarketplaceUnivalle
-              </span>
-            </div>
-            </div>
-          <nav className="flex items-center gap-4">
-            {auth.user ? (
-              <Link
-                href={route('dashboard')}
-                className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href={route('login')}
-                  className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
-                >
-                  Acceso
-                </Link>
-                <Link
-                  href={route('register')}
-                  className="rounded-sm border border-white text-white px-5 py-1.5 hover:bg-white hover:text-red-600 transition-colors"
-                >
-                  Registro
-                </Link>
-              </>
-            )}
-          </nav>
-        </header>
+       <header className="fixed top-0 z-50 w-full bg-red-600 transition-all duration-300">
+  <div className="container mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+    
+    {/* Logo + Título */}
+    <div className="flex items-center gap-3">
+      <div
+        className={`p-2 rounded-xl ${
+          scrolled ? "bg-gradient-to-r from-red-600 to-rose-500" : "bg-white/15 backdrop-blur-sm"
+        }`}
+      >
+        <AppLogoIcon className={`w-6 h-6 ${scrolled ? "text-white" : "text-red-600"}`} />
+      </div>
+      <span className={`text-lg sm:text-xl font-bold ${scrolled ? "text-red-600" : "text-white"}`}>
+        MarketplaceUnivalle
+      </span>
+    </div>
+
+    {/* Botones */}
+    <nav className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-4 mt-2 sm:mt-0">
+      {auth.user ? (
+        <Link
+          href={route('dashboard')}
+          className="rounded-md border border-white text-white px-4 py-1.5 text-sm sm:text-base hover:bg-white hover:text-red-600 transition-colors"
+        >
+          Dashboard
+        </Link>
+      ) : (
+        <>
+          <Link
+            href={route('login')}
+            className="rounded-md border border-white text-white px-4 py-1.5 text-sm sm:text-base hover:bg-white hover:text-red-600 transition-colors"
+          >
+            Acceso
+          </Link>
+          <Link
+            href={route('register')}
+            className="rounded-md border border-white text-white px-4 py-1.5 text-sm sm:text-base hover:bg-white hover:text-red-600 transition-colors"
+          >
+            Registro
+          </Link>
+        </>
+      )}
+    </nav>
+  </div>
+</header>
+
 
         {/* Main Content */}
-        <main className="flex-1">
+        <main className="flex-1 pt-16 md:pt-0">
           {/* Hero Section */}
           <motion.section
             initial={{ opacity: 0, y: 50 }}

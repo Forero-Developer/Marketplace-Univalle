@@ -92,7 +92,7 @@ export default function CreateProduct() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen flex items-center justify-center bg-white px-12 py-12"
+        className="min-h-screen flex items-center justify-center bg-white px-12 py-12 pt-23 md:pt-0"
       >
         <div className="relative w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
           <h2 className="text-3xl font-bold mb-6 text-red-600 text-center">Publicar producto</h2>
