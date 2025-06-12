@@ -69,7 +69,7 @@ export default function MyProductsPage({ products, userId }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Mis productos" />
 
-      <div className="p-6 sm:pt-9 bg-gray-50">
+      <div className="p-6 sm:pt-23 bg-gray-50 pt-23 md:pt-10">
 
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6">
                     <div className="flex-1 min-w-0">

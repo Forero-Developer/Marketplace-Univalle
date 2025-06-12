@@ -3,40 +3,34 @@ import { useCallback, useEffect, useState } from 'react';
 export type Appearance = 'light';
 
 const setCookie = (name: string, value: string, days = 365) => {
-    if (typeof document === 'undefined') {
-        return;
-    }
+    if (typeof document === 'undefined') return;
 
     const maxAge = days * 24 * 60 * 60;
     document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
 };
 
-const applyTheme = (appearance: Appearance) => {
+const applyTheme = () => {
     // Solo tema light, así que quitamos la clase 'dark'
     document.documentElement.classList.remove('dark');
 };
 
 export function initializeTheme() {
-    // Siempre light, no hace falta leer localStorage
-    applyTheme('light');
+    applyTheme(); // No necesita argumento
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('light');
+    const [, setAppearance] = useState<Appearance>('light');
 
     const updateAppearance = useCallback((mode: Appearance) => {
         setAppearance(mode);
-
         localStorage.setItem('appearance', mode);
         setCookie('appearance', mode);
-
-        applyTheme(mode);
+        applyTheme(); // No necesita argumento
     }, []);
 
     useEffect(() => {
-        // Ignoramos localStorage, forzamos a 'light'
         updateAppearance('light');
     }, [updateAppearance]);
 
-    return { appearance, updateAppearance } as const;
+    return { updateAppearance } as const;
 }

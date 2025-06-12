@@ -33,7 +33,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="px-4 py-6">
+        <div className="px-4 py-6 pt-23 md:pt-10">
             <Heading title="Ajustes" description="Administra tu perfil y la configuración de tu cuenta" />
 
             <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">

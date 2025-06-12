@@ -1,5 +1,3 @@
-"use client"
-
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
 import { Head, router } from "@inertiajs/react"
@@ -114,7 +112,7 @@ export default function Dashboard({ products, userId, filters, allCategories, al
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 md:pt-0">
         {/* Container principal con padding responsive */}
         <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl mx-auto">
           {/* Header Section */}

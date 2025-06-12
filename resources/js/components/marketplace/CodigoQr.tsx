@@ -1,5 +1,3 @@
-"use client"
-
 import { useRef } from "react"
 import QRCode from "react-qr-code"
 import { Button } from "@/components/ui/button"
@@ -134,7 +132,7 @@ const QrCodeProduct = ({ product }: QrCodeProductProps) => {
     let tagY = 300
     ctx.font = "16px Arial"
 
-    tags.forEach((tag, index) => {
+    tags.forEach((tag) => {
       const tagWidth = ctx.measureText(tag.text).width + 24
       const tagX = (canvas.width - tagWidth) / 2
 
@@ -261,9 +259,7 @@ const QrCodeProduct = ({ product }: QrCodeProductProps) => {
       <div className="bg-white p-4 rounded-lg border-2 border-gray-100 flex flex-col items-center">
         <QRCode ref={qrRef} value={currentUrl} size={180} style={{ height: "auto", maxWidth: "100%", width: "100%" }} />
         <div className="mt-3 text-center">
-          <p className="text-sm font-medium text-gray-800">{product.name}</p>
-          <p className="text-lg font-bold text-red-600">${new Intl.NumberFormat("es-ES").format(product.price)}</p>
-          <p className="text-xs text-gray-500 mt-1">Por: {product.user.name}</p>
+          <p className="text-sm font-medium text-gray-800 mt-3">{currentUrl}</p>
         </div>
       </div>
 
