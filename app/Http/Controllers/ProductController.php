@@ -11,110 +11,110 @@ class ProductController extends Controller
 {
     // Mostrar todos los productos en el dashboard
     public function index(Request $request)
-{
-    $userId = $request->user()->id;
+    {
+        $userId = $request->user()->id;
 
-    $search = $request->query('search', '');
-    $category = $request->query('category', '');
-    $faculty = $request->query('faculty', '');
+        $search = $request->query('search', '');
+        $category = $request->query('category', '');
+        $faculty = $request->query('faculty', '');
 
-    $query = Product::with('user')
-        ->where('user_id', '!=', $userId);
+        $query = Product::with('user')
+            ->where('user_id', '!=', $userId);
 
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%$search%")
-              ->orWhere('category', 'like', "%$search%")
-              ->orWhere('faculty', 'like', "%$search%");
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('category', 'like', "%$search%")
+                    ->orWhere('faculty', 'like', "%$search%");
+            });
+        }
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        if ($faculty) {
+            $query->where('faculty', $faculty);
+        }
+
+        $favoriteProductIds = $request->user()->favorites()->pluck('product_id')->toArray();
+
+        $products = $query->paginate(9)->through(function ($product) use ($favoriteProductIds) {
+            $product->isFavorited = in_array($product->id, $favoriteProductIds);
+            return $product;
         });
+
+        $allCategories = Product::select('category')->distinct()->pluck('category');
+        $allFaculties = Product::select('faculty')->distinct()->pluck('faculty');
+
+        return Inertia::render('dashboard', [
+            'products' => $products,
+            'userId' => $userId,
+            'filters' => [
+                'search' => $search,
+                'category' => $category,
+                'faculty' => $faculty,
+            ],
+            'allCategories' => $allCategories,
+            'allFaculties' => $allFaculties,
+        ]);
     }
 
-    if ($category) {
-        $query->where('category', $category);
+    public function adminIndex(Request $request)
+    {
+        $search = $request->query('search', '');
+        $category = $request->query('category', '');
+        $faculty = $request->query('faculty', '');
+
+        $query = Product::with('user');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('category', 'like', "%$search%")
+                    ->orWhere('faculty', 'like', "%$search%");
+            });
+        }
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        if ($faculty) {
+            $query->where('faculty', $faculty);
+        }
+
+        $products = $query->paginate(9);
+
+        if ($request->wantsJson()) {
+            return response()->json($products);
+        }
+
+        return Inertia::render('admin/products/Index', [
+            'products' => $products,
+            'filters' => [
+                'search' => $search,
+                'category' => $category,
+                'faculty' => $faculty,
+            ],
+            'allCategories' => Product::select('category')->distinct()->pluck('category'),
+            'allFaculties' => Product::select('faculty')->distinct()->pluck('faculty'),
+        ]);
     }
 
-    if ($faculty) {
-        $query->where('faculty', $faculty);
+    public function show(Product $product)
+    {
+        // Cargar relaciones si es necesario, por ejemplo 'user'
+        $product->load('user');
+
+        return Inertia::render('infoProducts', [
+            'product' => $product,
+        ]);
     }
 
-    $favoriteProductIds = $request->user()->favorites()->pluck('product_id')->toArray();
-
-    $products = $query->paginate(9)->through(function ($product) use ($favoriteProductIds) {
-        $product->isFavorited = in_array($product->id, $favoriteProductIds);
-        return $product;
-    });
-
-    $allCategories = Product::select('category')->distinct()->pluck('category');
-    $allFaculties = Product::select('faculty')->distinct()->pluck('faculty');
-
-    return Inertia::render('dashboard', [
-        'products' => $products,
-        'userId' => $userId,
-        'filters' => [
-            'search' => $search,
-            'category' => $category,
-            'faculty' => $faculty,
-        ],
-        'allCategories' => $allCategories,
-        'allFaculties' => $allFaculties,
-    ]);
-}
-
-public function adminIndex(Request $request)
-{
-    $search = $request->query('search', '');
-    $category = $request->query('category', '');
-    $faculty = $request->query('faculty', '');
-
-    $query = Product::with('user');
-
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%$search%")
-              ->orWhere('category', 'like', "%$search%")
-              ->orWhere('faculty', 'like', "%$search%");
-        });
-    }
-
-    if ($category) {
-        $query->where('category', $category);
-    }
-
-    if ($faculty) {
-        $query->where('faculty', $faculty);
-    }
-
-    $products = $query->paginate(9);
-
-    if ($request->wantsJson()) {
-        return response()->json($products);
-    }
-
-    return Inertia::render('admin/products/Index', [
-        'products' => $products,
-        'filters' => [
-            'search' => $search,
-            'category' => $category,
-            'faculty' => $faculty,
-        ],
-        'allCategories' => Product::select('category')->distinct()->pluck('category'),
-        'allFaculties' => Product::select('faculty')->distinct()->pluck('faculty'),
-    ]);
-}
-
-public function show(Product $product)
-{
-    // Cargar relaciones si es necesario, por ejemplo 'user'
-    $product->load('user');
-
-    return Inertia::render('infoProducts', [
-        'product' => $product,
-    ]);
-}
 
 
-
- public function misProductos(Request $request)
+    public function misProductos(Request $request)
     {
         $user = $request->user();
 
@@ -129,7 +129,7 @@ public function show(Product $product)
             'userId' => $user->id,
         ]);
     }
-    
+
 
     // Guardar un nuevo producto
     public function store(Request $request)
@@ -151,8 +151,8 @@ public function show(Product $product)
             foreach ($request->file('images') as $image) {
                 $path = $image->store('products', 'public'); // guarda en storage/app/public/products
                 $imagePaths[] = $path;
-    }
-}
+            }
+        }
 
         $product = Product::create([
             ...$validated,
@@ -162,9 +162,10 @@ public function show(Product $product)
 
 
 
+
         return redirect()->route('misProductos.index')->with('success', 'Producto creado con éxito.');
     }
-    
+
     public function update(Request $request, Product $product)
     {
         $user = $request->user();
@@ -192,66 +193,64 @@ public function show(Product $product)
     }
 
 
-public function edit(Product $product)
-{
-    $user = auth()->user();
+    public function edit(Product $product)
+    {
+        $user = auth()->user();
 
-    if ($product->user_id !== $user->id && $user->role !== 'admin') {
-        abort(403);
+        if ($product->user_id !== $user->id && $user->role !== 'admin') {
+            abort(403);
+        }
+
+        return Inertia::render('modificarProduct', [
+            'product' => $product,
+        ]);
     }
-
-    return Inertia::render('modificarProduct', [
-        'product' => $product,
-    ]);
-}
 
     public function destroy(Product $product, Request $request)
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    if ($user->role !== 'admin' && $product->user_id !== $user->id) {
-        abort(403, 'No autorizado');
+        if ($user->role !== 'admin' && $product->user_id !== $user->id) {
+            abort(403, 'No autorizado');
+        }
+
+
+        $product->delete();
+
+
+        return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
     }
 
-    $product->delete();
+    public function loadMore(Request $request)
+    {
+        $userId = $request->user()->id;
 
-   
-    return redirect()->route('misProductos.index')->with('success', 'Producto eliminado con éxito.');
-    
-}
+        $page = $request->query('page', 2);
+        $search = $request->query('search', '');
+        $category = $request->query('category', '');
+        $faculty = $request->query('faculty', '');
 
-public function loadMore(Request $request)
-{
-    $userId = $request->user()->id;
+        $query = Product::with('user')
+            ->where('user_id', '!=', $userId); // Filtrar productos distintos al usuario
 
-    $page = $request->query('page', 2);
-    $search = $request->query('search', '');
-    $category = $request->query('category', '');
-    $faculty = $request->query('faculty', '');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('category', 'like', "%$search%")
+                    ->orWhere('faculty', 'like', "%$search%");
+            });
+        }
 
-    $query = Product::with('user')
-        ->where('user_id', '!=', $userId); // Filtrar productos distintos al usuario
+        if ($category) {
+            $query->where('category', $category);
+        }
 
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%$search%")
-              ->orWhere('category', 'like', "%$search%")
-              ->orWhere('faculty', 'like', "%$search%");
-        });
+        if ($faculty) {
+            $query->where('faculty', $faculty);
+        }
+
+        $products = $query->paginate(9, ['*'], 'page', $page);
+
+        return response()->json($products);
     }
-
-    if ($category) {
-        $query->where('category', $category);
-    }
-
-    if ($faculty) {
-        $query->where('faculty', $faculty);
-    }
-
-    $products = $query->paginate(9, ['*'], 'page', $page);
-
-    return response()->json($products);
-}
-
-
 }

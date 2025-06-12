@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/app-layout'
 import type { BreadcrumbItem } from '@/types'
 import { Head, router } from '@inertiajs/react'
 import TextLink from '@/components/text-link'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, ClipboardList } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import FiltersBar from '@/components/marketplace/FiltersBar'
 import ProductGridAdmin from '@/components/marketplace/ProductGridAdmin'
@@ -147,6 +147,15 @@ export default function AdminProducts({
               Lista completa de productos en la plataforma
             </p>
           </div>
+          <div className="flex-shrink-0">
+              <TextLink
+              href={route("admin.audit.index")}
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl hover:shadow-red-200/50 transition-all duration-200 no-underline w-full sm:w-auto"
+              >
+              <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="text-sm sm:text-base">Auditoria</span>
+              </TextLink>
+            </div>
           <div className="flex-shrink-0">
               <TextLink
               href={route("products.create")}

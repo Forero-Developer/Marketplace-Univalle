@@ -2,7 +2,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import AppLogoIcon from '@/components/app-logo-icon';
+import { router } from '@inertiajs/core';
 
 type LoginForm = {
     email: string;
@@ -143,9 +144,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-50 rounded-full opacity-30 blur-3xl"></div>
 
         <div className="absolute top-6 right-6">
-          <TextLink href={route("home")} className="p-3 rounded-xl hover:bg-red-50 transition-all duration-200 group">
-            <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
-          </TextLink>
+          <Button onClick={() => router.visit(route('home'))} variant={'outline'} className="cursor-pointer p-3 rounded-xl hover:bg-red-50 transition-all duration-200 group">
+            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+          </Button>
         </div>
 
         <div className="w-full max-w-md relative z-10">
