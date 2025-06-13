@@ -14,7 +14,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Ajustes del Perfil',
+        title: 'Ajustes del perfil',
         href: '/settings/profile',
     },
 ];
@@ -66,7 +66,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Correo Electronico</Label>
+                            <Label htmlFor="email">Correo electrónico</Label>
 
                             <Input
                                 id="email"
@@ -84,7 +84,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
                                 <p className="text-muted-foreground -mt-4 text-sm">
-                                    Tu correo electronico no esta verificado.{' '}
+                                    Tu correo electrónico no esta verificado.{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"

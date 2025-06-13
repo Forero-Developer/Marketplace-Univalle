@@ -103,20 +103,23 @@ export default function ModificarProducto({ product }: ModificarProductoProps) {
                         </div>
 
                         <div>
-                            <label className="block font-semibold">Precio</label>
+                            <label htmlFor="price" className="block font-semibold">Precio</label>
                             <div className="relative">
-                                <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500 select-none">$</span>
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 select-none">$</span>
                                 <input
-                                    type="number"
-                                    value={displayPrice}
-                                    onChange={handlePriceChange}
-                                    className="input w-full rounded-lg border border-gray-300 px-7 py-2"
-                                    inputMode="numeric"
-                                    pattern="[0-9]*"
-                                    aria-label="Precio en pesos colombianos"
+                                type="text"
+                                name="price"
+                                value={displayPrice}
+                                onChange={handlePriceChange}
+                                className="input w-full border border-gray-300 rounded-lg px-7 py-2"
+                                inputMode="numeric"
+                                maxLength={11}
+                                pattern="[0-9.]*"
+                                aria-label="Precio en pesos colombianos"
+                                required
                                 />
                             </div>
-                            {errors.price && <span className="text-sm text-red-500">{errors.price}</span>}
+                            {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

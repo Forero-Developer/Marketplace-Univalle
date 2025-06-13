@@ -257,14 +257,14 @@ const QrCodeProduct = ({ product }: QrCodeProductProps) => {
     <div className="space-y-4">
       {/* Vista previa del QR simple */}
       <div className="bg-white p-4 rounded-lg border-2 border-gray-100 flex flex-col items-center">
-        <QRCode ref={qrRef} value={currentUrl} size={180} style={{ height: "auto", maxWidth: "100%", width: "100%" }} />
+        <QRCode ref={qrRef} value={currentUrl} size={150} style={{ height: "auto", maxWidth: "100%"}} />
         <div className="mt-3 text-center">
-          <p className="text-sm font-medium text-gray-800 mt-3">{currentUrl}</p>
+          <p className="text-sm font-medium text-gray-800 mt-3 break-all">{currentUrl}</p>
         </div>
       </div>
 
       {/* Botón de descarga */}
-      <Button onClick={handleDownload} className="w-full" size="lg">
+      <Button onClick={handleDownload} className="w-full" size="sm">
         <Download className="h-4 w-4 mr-2" />
         Descargar QR Profesional
       </Button>

@@ -18,6 +18,7 @@ interface Product {
     user: {
         id: number;
         name: string;
+        email: string;
     };
 }
 
@@ -133,6 +134,8 @@ export default function InfoProducts({ product }: ProductDetailProps) {
                                     <div>
                                         <p className="font-medium text-gray-900 uppercase">VENDEDOR</p>
                                         <p className="text-sm text-gray-600 uppercase">{product.user.name}</p>
+                                        <p className="text-sm text-gray-600 uppercase">{product.user.email}</p>
+
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">

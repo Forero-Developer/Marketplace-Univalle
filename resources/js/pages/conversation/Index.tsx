@@ -93,7 +93,7 @@ export default function Index({ conversations }: Props) {
               className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 self-start"
             >
               <ArrowLeft className="w-4 h-4" />
-              Volver al dashboard
+              Volver al Inicio
             </Link>
           </div>
         </div>
