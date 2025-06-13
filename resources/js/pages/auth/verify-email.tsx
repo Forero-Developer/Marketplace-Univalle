@@ -17,13 +17,14 @@ export default function VerifyEmail({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link we just emailed to you.">
+        <AuthLayout title="Verificar Correo" description="Porfavor verifica tu correo electronico y has click en el link que hemos enviado para ti. En caso de no recibirlo, por favor revisa tu carpeta de spam o correos no deseados.">
             <Head title="Email verification" />
 
             {status === 'verification-link-sent' && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    e ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionó durante el registro.
+                    Se ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionó durante el registro. En caso de no recibirlo, por favor revisa tu carpeta de spam o correo no deseado.
                 </div>
+                
             )}
 
             <form onSubmit={submit} className="space-y-6 text-center">

@@ -13,7 +13,7 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
-        title: 'contraseña',
+        title: 'Contraseña',
         href: '/settings/password',
         icon: null,
     },

@@ -78,11 +78,6 @@ Route::post('/email/verification-notification', function () {
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/dashboard');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
 Route::get('/linkstorage', function () {
     try {
         Artisan::call('storage:link');

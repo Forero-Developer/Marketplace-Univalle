@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { useForm, router, Head } from "@inertiajs/react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef} from "react"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
-import { ArrowLeft, Send, Clock, MessageSquare } from "lucide-react"
+import { ArrowLeft, Send, MessageSquare } from "lucide-react"
 
 
 type MessageForm = {
@@ -56,7 +56,6 @@ export default function Show({ conversation, messages, currentUserId }: ShowProp
   })
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
-  const [isTyping, setIsTyping] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   const sendMessage = (e: React.FormEvent) => {
@@ -91,7 +90,6 @@ export default function Show({ conversation, messages, currentUserId }: ShowProp
     }
 
     // Show typing indicator
-    setIsTyping(e.target.value.length > 0)
   }
 
   // Format date
@@ -105,7 +103,7 @@ export default function Show({ conversation, messages, currentUserId }: ShowProp
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={`Conversación con ${otherUser.name}`} />
 
-      <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 lg:px-8 pt-23 md:pt-13">
         <div className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 sm:p-6">
@@ -210,19 +208,13 @@ export default function Show({ conversation, messages, currentUserId }: ShowProp
                       : "bg-gray-100 text-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-5 h-5 cursor-pointer" />
                 </button>
               </div>
 
               {/* Typing indicator */}
               <div className="flex justify-between items-center px-1">
-                {isTyping && (
-                  <div className="text-xs text-gray-500 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Escribiendo...
-                  </div>
-                )}
-                <div className="text-xs text-gray-400 ml-auto">Presiona Enter para enviar</div>
+                <div className="text-xs text-gray-400 ml-auto">Presiona el boton para enviar</div>
               </div>
             </form>
           </div>

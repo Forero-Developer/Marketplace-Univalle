@@ -29,7 +29,9 @@ class BuildForProduction extends Command
         foreach ($commands as $command) {
             $this->info("Running: $command");
             $process = Process::fromShellCommandline($command);
-            $process->setTty(true);
+            if (DIRECTORY_SEPARATOR !== '\\') {
+                $process->setTty(true);
+            }
             $process->run(function ($type, $buffer) {
                 $this->output->write($buffer);
             });
